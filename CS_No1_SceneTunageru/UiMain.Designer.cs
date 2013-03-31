@@ -36,7 +36,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "UiMain";
             this.Size = new System.Drawing.Size(360, 362);
+            this.Load += new System.EventHandler(this.UiMain_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.UiMain_Paint);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseUp);
             this.Resize += new System.EventHandler(this.UiMain_Resize);

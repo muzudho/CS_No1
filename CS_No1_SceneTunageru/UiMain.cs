@@ -16,7 +16,7 @@ namespace Gs_No1
         /// <summary>
         /// 座標マット。
         /// </summary>
-        private CoordinateMat coordinateMat;
+        private CoordinateMat coordMat;
 
         /// <summary>
         /// クリックした始点。
@@ -30,10 +30,51 @@ namespace Gs_No1
         private Point releaseMouseButtonLocation;
         private bool isReleaseMouseButtonLocationVisible;
 
+        /// <summary>
+        /// 座標マット・ボタン
+        /// </summary>
+        private GraphicButton coordMatGbtn;
+
+        /// <summary>
+        /// シーン編集・ボタン
+        /// </summary>
+        private GraphicButton sceneGbtn;
+
+        /// <summary>
+        /// ムーブ・ボタン
+        /// </summary>
+        private GraphicButton moveGbtn;
+
+        /// <summary>
+        /// テキスト・ボタン
+        /// </summary>
+        private GraphicButton textGbtn;
+
         public UiMain()
         {
-            this.coordinateMat = new CoordinateMat();
+            this.coordMat = new CoordinateMat();
+            this.coordMat.IsSelected = true;
             this.clickedLocation = new Point();
+            this.coordMatGbtn = new GraphicButton();
+            this.coordMatGbtn.Id = "coordMat";
+            this.coordMatGbtn.FilePath = "img/btn_CoordMat.png";
+            this.coordMatGbtn.Bounds = new Rectangle(50, 0, 50, 50);
+            this.coordMatGbtn.IsSelected = true;
+            this.coordMatGbtn.SwitchOnAction = () => { this.coordMat.IsSelected = true; };
+            this.coordMatGbtn.SwitchOffAction = () => { this.coordMat.IsSelected = false; };
+            this.sceneGbtn = new GraphicButton();
+            this.sceneGbtn.Id = "scene";
+            this.sceneGbtn.FilePath = "img/btn_Scene.png";
+            this.sceneGbtn.Bounds = new Rectangle(100, 0, 50, 50);
+            this.moveGbtn = new GraphicButton();
+            this.moveGbtn.Id = "move";
+            this.moveGbtn.FilePath = "img/btn_Move.png";
+            this.moveGbtn.Bounds = new Rectangle( 50, 50, 50, 50);
+            this.moveGbtn.IsSelected = true;
+            this.textGbtn = new GraphicButton();
+            this.textGbtn.Id = "text";
+            this.textGbtn.FilePath = "img/btn_Text.png";
+            this.textGbtn.Bounds = new Rectangle(100, 50, 50, 50);
             InitializeComponent();
         }
 
@@ -50,7 +91,13 @@ namespace Gs_No1
             g.DrawRectangle(Pens.Red, 0, 0, this.Width-1, this.Height-1);
 
             // 座標マット
-            this.coordinateMat.Paint(g);
+            this.coordMat.Paint(g);
+
+            // 各種ボタン
+            this.coordMatGbtn.Paint(g);
+            this.sceneGbtn.Paint(g);
+            this.moveGbtn.Paint(g);
+            this.textGbtn.Paint(g);
 
             // クリック地点
             if(this.isClickedLocationVisible)
@@ -82,6 +129,8 @@ namespace Gs_No1
                     this.releaseMouseButtonLocation
                     );
             }
+
+
         }
 
         private void UiMain_Resize(object sender, EventArgs e)
@@ -103,13 +152,13 @@ namespace Gs_No1
             System.Console.WriteLine( "move("+move.X+","+move.Y+")");
 
             // 選択されている構成部品があれば、移動量分だけ移動します。
-            if(this.coordinateMat.IsSelected)
+            if(this.coordMat.IsSelected)
             {
-                this.coordinateMat.Bounds = new Rectangle(
-                    this.coordinateMat.Bounds.X + move.X,
-                    this.coordinateMat.Bounds.Y + move.Y,
-                    this.coordinateMat.Bounds.Width,
-                    this.coordinateMat.Bounds.Height
+                this.coordMat.Bounds = new Rectangle(
+                    this.coordMat.Bounds.X + move.X,
+                    this.coordMat.Bounds.Y + move.Y,
+                    this.coordMat.Bounds.Width,
+                    this.coordMat.Bounds.Height
                     );
             }
 
@@ -126,8 +175,112 @@ namespace Gs_No1
             this.isReleaseMouseButtonLocationVisible = false;
 
             // 構成部品にもマウスクリックを伝達。
-            this.coordinateMat.MouseClick(sender, e);
+            this.coordMat.MouseDown(sender, e);
+
+            // ラジオボタンのように。
+            // 今回、マウスボタンで押されたボタン
+            string pressedBtn="";
+            if(this.coordMatGbtn.Bounds.Contains(e.Location))
+            {
+                pressedBtn = this.coordMatGbtn.Id;
+            }
+            else if(this.sceneGbtn.Bounds.Contains(e.Location))
+            {
+                pressedBtn = this.sceneGbtn.Id;
+            }
+
+            if ("" != pressedBtn)
+            {
+                // 選択されていればオン、選択されていなければオフ。
+                if (this.coordMatGbtn.Id == pressedBtn)
+                {
+                    this.coordMatGbtn.IsSelected = true;
+                }
+                else
+                {
+                    this.coordMatGbtn.IsSelected = false;
+                }
+
+                if (this.sceneGbtn.Id == pressedBtn)
+                {
+                    this.sceneGbtn.IsSelected = true;
+                }
+                else
+                {
+                    this.sceneGbtn.IsSelected = false;
+                }
+            }
+
+            // ラジオボタンのように。
+            // 今回、マウスボタンで押されたボタン
+            pressedBtn = "";
+            if (this.moveGbtn.Bounds.Contains(e.Location))
+            {
+                pressedBtn = this.moveGbtn.Id;
+            }
+            else if (this.textGbtn.Bounds.Contains(e.Location))
+            {
+                pressedBtn = this.textGbtn.Id;
+            }
+
+            if ("" != pressedBtn)
+            {
+                // 選択されていればオン、選択されていなければオフ。
+                if (this.moveGbtn.Id == pressedBtn)
+                {
+                    this.moveGbtn.IsSelected = true;
+                }
+                else
+                {
+                    this.moveGbtn.IsSelected = false;
+                }
+
+                if (this.textGbtn.Id == pressedBtn)
+                {
+                    this.textGbtn.IsSelected = true;
+                }
+                else
+                {
+                    this.textGbtn.IsSelected = false;
+                }
+            }
+
             this.Refresh();
+        }
+
+        private void UiMain_Load(object sender, EventArgs e)
+        {
+            this.coordMatGbtn.Load();
+            this.sceneGbtn.Load();
+            this.moveGbtn.Load();
+            this.textGbtn.Load();
+        }
+
+        private void UiMain_MouseClick(object sender, MouseEventArgs e)
+        {
+            //座標マットボタンを押したとき
+            if(this.coordMatGbtn.Bounds.Contains(e.Location))
+            {
+                this.coordMatGbtn.PerformSwitchOn(sender, e);
+            }
+
+            //シーンボタンを押したとき
+            if (this.sceneGbtn.Bounds.Contains(e.Location))
+            {
+                this.sceneGbtn.PerformSwitchOn(sender, e);
+            }
+
+            //移動ボタンを押したとき
+            if (this.moveGbtn.Bounds.Contains(e.Location))
+            {
+                this.moveGbtn.PerformSwitchOn(sender, e);
+            }
+
+            //テキストボタンを押したとき
+            if (this.textGbtn.Bounds.Contains(e.Location))
+            {
+                this.textGbtn.PerformSwitchOn(sender, e);
+            }
         }
     }
 }
