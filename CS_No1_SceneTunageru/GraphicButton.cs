@@ -125,14 +125,31 @@ namespace Gs_No1
             }
         }
 
+        /// <summary>
+        /// 表示の有無。
+        /// </summary>
+        private bool isVisible;
+        public bool IsVisible
+        {
+            get
+            {
+                return this.isVisible;
+            }
+            set
+            {
+                this.isVisible = value;
+            }
+        }
+
         public GraphicButton()
         {
             this.id = "";
             this.backColor = Color.White;
             this.bounds = new Rectangle(0,0,50,50);
-            //this.switchOnAction = () => {};
-            //this.switchOffAction = () => { };
+            this.switchOnAction = () => {};
+            this.switchOffAction = () => {};
             this.filePath = "";
+            this.isVisible = true;
         }
 
         public void Load()
@@ -142,66 +159,66 @@ namespace Gs_No1
 
         public void Paint(Graphics g)
         {
-            // 画像
-            if (null!=this.image)
+            if (this.isVisible)
             {
-                g.DrawImage(this.image, this.Bounds);
-            }
+                // 画像
+                if (null != this.image)
+                {
+                    g.DrawImage(this.image, this.Bounds);
+                }
 
-            // 枠線の色
-            Pen pen;
-            if (this.isSelected)
-            {
-                pen = new Pen(Color.Green, 2.0f);
-            }
-            else
-            {
-                pen = new Pen(Color.Black, 2.0f);
-            }
+                // 枠線の色
+                Pen pen;
+                if (this.isSelected)
+                {
+                    pen = new Pen(Color.Green, 2.0f);
+                }
+                else
+                {
+                    pen = new Pen(Color.Black, 2.0f);
+                }
 
-            // 枠線
-            Rectangle bounds2 = new Rectangle(
-                    this.bounds.X,
-                    this.bounds.Y,
-                    this.bounds.Width-2,
-                    this.bounds.Height-2
-                    );
-            g.DrawRectangle(pen,bounds2);
+                // 枠線
+                Rectangle bounds2 = new Rectangle(
+                        this.bounds.X,
+                        this.bounds.Y,
+                        this.bounds.Width - 2,
+                        this.bounds.Height - 2
+                        );
+                g.DrawRectangle(pen, bounds2);
 
-            // 半透明の緑色で塗りつぶし
-            if (this.isSelected)
-            {
-                g.FillRectangle(new SolidBrush(Color.FromArgb(128, 0, 255, 0)), bounds2);
+                // 半透明の緑色で塗りつぶし
+                if (this.isSelected)
+                {
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(128, 0, 255, 0)), bounds2);
+                }
             }
         }
 
         public void PerformSwitchOn(object sender, MouseEventArgs e)
         {
-            if(null!=this.switchOnAction)
-            {
-                this.switchOnAction();
-            }
+            this.switchOnAction();
         }
 
         public void PerformSwitchOff(object sender, MouseEventArgs e)
         {
-            if (null != this.switchOffAction)
-            {
-                this.switchOffAction();
-            }
+            this.switchOffAction();
         }
 
         public void MouseDown(object sender, MouseEventArgs e)
         {
-            if (this.Bounds.Contains(e.Location))
+            if (this.isVisible)
             {
-                System.Console.WriteLine("範囲内。mouse(" + e.X + "," + e.Y + ") bounds(" + this.Bounds.X + "," + this.Bounds.Y + "," + this.Bounds.Width + "," + this.Bounds.Height + ")");
-                this.isSelected = true;
-            }
-            else
-            {
-                System.Console.WriteLine("境界外。");
-                this.isSelected = false;
+                if (this.Bounds.Contains(e.Location))
+                {
+                    System.Console.WriteLine("範囲内。mouse(" + e.X + "," + e.Y + ") bounds(" + this.Bounds.X + "," + this.Bounds.Y + "," + this.Bounds.Width + "," + this.Bounds.Height + ")");
+                    this.isSelected = true;
+                }
+                else
+                {
+                    System.Console.WriteLine("境界外。");
+                    this.isSelected = false;
+                }
             }
         }
 

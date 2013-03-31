@@ -5,15 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Gs_No1
 {
-
     /// <summary>
-    /// 座標マット
+    /// シーン・ボックス。
     /// </summary>
-    public class CoordinateMat
+    public class SceneBox
     {
 
         /// <summary>
@@ -45,6 +43,7 @@ namespace Gs_No1
             set
             {
                 movement = value;
+                System.Console.WriteLine("シーンボックス movement(" + movement.X + "," + movement.Y + "," + movement.Width + "," + movement.Height + ")");
             }
         }
 
@@ -65,6 +64,24 @@ namespace Gs_No1
         }
 
 
+
+
+        /// <summary>
+        /// 表示文字列。
+        /// </summary>
+        private string title;
+        public string Title
+        {
+            get
+            {
+                return title;
+            }
+            set
+            {
+                title = value;
+            }
+        }
+
         /// <summary>
         /// 選択中。
         /// </summary>
@@ -73,121 +90,96 @@ namespace Gs_No1
         {
             get
             {
-                return this.isSelected;
+                return isSelected;
             }
             set
             {
-                this.isSelected = value;
+                isSelected = value;
             }
         }
 
 
-        public CoordinateMat()
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public SceneBox()
         {
-            this.sourceBounds = new Rectangle(100,100,320,320);
+            this.title = "名無し";
+            this.sourceBounds = new Rectangle(0,0,100,100);
             this.Movement = new Rectangle();
         }
 
+
         public void Paint(Graphics g)
         {
-
-            // セルサイズ
-            int cellSize = 32;
-
             //────────────────────────────────────────
             // 移動前の残像
             //────────────────────────────────────────
 
             Rectangle bounds2 = new Rectangle(
-                this.SourceBounds.X,
-                this.SourceBounds.Y,
-                this.SourceBounds.Width,
-                this.SourceBounds.Height
+                this.sourceBounds.X,
+                this.sourceBounds.Y,
+                this.sourceBounds.Width - 2,
+                this.sourceBounds.Height - 2
                 );
 
-            Pen pen;
-            if (this.IsSelected)
-            {
-                pen = new Pen(Color.FromArgb(128,0,0,255));
-            }
-            else
-            {
-                pen = new Pen(Color.FromArgb(128, 0, 0, 0));
-            }
-
-            // 縦線
-            int e1 = bounds2.Height / cellSize;
-            for (int l1 = 1; l1 < e1; l1++)
-            {
-                g.DrawLine(pen,
-                    l1 * cellSize + bounds2.X,
-                    0 + bounds2.Y,
-                    l1 * cellSize + bounds2.X,
-                    bounds2.Height + bounds2.Y);
-            }
-
-            // 横線
-            e1 = bounds2.Width / cellSize;
-            for (int l1 = 1; l1 < e1; l1++)
-            {
-                g.DrawLine(
-                    pen,
-                    0 + bounds2.X,
-                    l1 * cellSize + bounds2.Y,
-                    bounds2.Width + bounds2.X,
-                    l1 * cellSize + bounds2.Y
-                    );
-            }
+            Pen pen = new Pen(Color.FromArgb(128,0,0,0), 2.0f);
 
             // 枠線
             g.DrawRectangle(pen, bounds2);
+
+            // タイトル
+            g.DrawString(
+                this.title,
+                new Font("ＭＳ ゴシック", 20.0f),
+                new SolidBrush(Color.FromArgb(128,0,0,0)),
+                new Point(
+                    bounds2.X,
+                    bounds2.Y
+                    )
+                );
 
             //────────────────────────────────────────
             // 移動後
             //────────────────────────────────────────
 
             bounds2 = new Rectangle(
-                this.SourceBounds.X + this.Movement.X,
-                this.SourceBounds.Y + this.Movement.Y,
-                this.SourceBounds.Width + this.Movement.Width,
-                this.SourceBounds.Height + this.Movement.Height
+                this.sourceBounds.X + this.Movement.X,
+                this.sourceBounds.Y + this.Movement.Y,
+                this.sourceBounds.Width - 2 + this.Movement.Width,
+                this.sourceBounds.Height - 2 + this.Movement.Height
                 );
-
+            pen = new Pen(Color.Black, 2.0f);
+            
+            // 背景色
+            Brush backBrush;
             if (this.IsSelected)
             {
-                pen = new Pen(Color.Blue);
+                backBrush = Brushes.Lime;
             }
             else
             {
-                pen = new Pen(Color.Black);
+                backBrush = Brushes.White;
             }
-
-            // 縦線
-            e1 = bounds2.Height / cellSize;
-            for (int l1 = 1; l1 < e1; l1++)
-            {
-                g.DrawLine(pen,
-                    l1 * cellSize + bounds2.X,
-                    0 + bounds2.Y,
-                    l1 * cellSize + bounds2.X,
-                    bounds2.Height + bounds2.Y);
-            }
-
-            // 横線
-            e1 = bounds2.Width / cellSize;
-            for (int l1 = 1; l1 < e1; l1++)
-            {
-                g.DrawLine(
-                    pen,
-                    0 + bounds2.X,
-                    l1 * cellSize + bounds2.Y,
-                    bounds2.Width + bounds2.X,
-                    l1 * cellSize + bounds2.Y
-                    );
-            }
+            g.FillRectangle(backBrush, bounds2);
 
             // 枠線
-            g.DrawRectangle( pen, bounds2 );
+            g.DrawRectangle(pen, bounds2);
+
+            // タイトル
+            g.DrawString(
+                this.title,
+                new Font("ＭＳ ゴシック",20.0f),
+                Brushes.Black,
+                new Point(
+                    bounds2.X,
+                    bounds2.Y
+                    )
+                );
+
         }
 
     }

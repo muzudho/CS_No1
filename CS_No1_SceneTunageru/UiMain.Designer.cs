@@ -28,24 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(26, 18);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 19);
+            this.textBox1.TabIndex = 0;
+            this.textBox1.Visible = false;
+            this.textBox1.WordWrap = false;
+            this.textBox1.Leave += new System.EventHandler(this.textBox1_Leave);
             // 
             // UiMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.textBox1);
+            this.DoubleBuffered = true;
             this.Name = "UiMain";
             this.Size = new System.Drawing.Size(360, 362);
             this.Load += new System.EventHandler(this.UiMain_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.UiMain_Paint);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UiMain_MouseUp);
             this.Resize += new System.EventHandler(this.UiMain_Resize);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
