@@ -44,8 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cable.cs" />
     <Compile Include="GraphicButton.cs" />
-    <Compile Include="CoordinateMat.cs" />
+    <Compile Include="CoordMat.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

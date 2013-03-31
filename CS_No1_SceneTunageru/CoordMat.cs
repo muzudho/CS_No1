@@ -13,7 +13,7 @@ namespace Gs_No1
     /// <summary>
     /// 座標マット
     /// </summary>
-    public class CoordinateMat
+    public class CoordMat
     {
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Gs_No1
         }
 
 
-        public CoordinateMat()
+        public CoordMat()
         {
             this.sourceBounds = new Rectangle(100,100,320,320);
             this.Movement = new Rectangle();
@@ -92,7 +92,7 @@ namespace Gs_No1
         {
 
             // セルサイズ
-            int cellSize = 32;
+            int cellSize = UiMain.CELL_SIZE;
 
             //────────────────────────────────────────
             // 移動前の残像
