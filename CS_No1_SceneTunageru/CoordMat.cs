@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Gs_No1
 {
@@ -81,11 +82,64 @@ namespace Gs_No1
             }
         }
 
+        /// <summary>
+        /// マウスカーソルが合わさっています。
+        /// </summary>
+        private bool isMouseOvered;
+        public bool IsMouseOvered
+        {
+            get
+            {
+                return this.isMouseOvered;
+            }
+            set
+            {
+                this.isMouseOvered = value;
+            }
+        }
+
+        private string fileName;
+        public string FileName
+        {
+            get
+            {
+                return fileName;
+            }
+            set
+            {
+                fileName = value;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 表示の有無。
+        /// </summary>
+        private bool isVisible;
+        public bool IsVisible
+        {
+            get
+            {
+                return this.isVisible;
+            }
+            set
+            {
+                this.isVisible = value;
+            }
+        }
+
+        public void Clear()
+        {
+            this.sourceBounds = new Rectangle(100, 100, 20 * UiMain.CELL_SIZE, 20 * UiMain.CELL_SIZE);
+            this.Movement = new Rectangle();
+            this.fileName = "noname.png";
+            this.IsVisible = true;
+        }
 
         public CoordMat()
         {
-            this.sourceBounds = new Rectangle(100,100,320,320);
-            this.Movement = new Rectangle();
+            this.Clear();
         }
 
         public void Paint(Graphics g)
@@ -105,21 +159,38 @@ namespace Gs_No1
                 this.SourceBounds.Height
                 );
 
-            Pen pen;
-            if (this.IsSelected)
+            Pen borderPen;
+            Pen gridPen;
+            Brush brush;
+            // 枠線の太さ
+            float weight;
+            if (this.isMouseOvered)
             {
-                pen = new Pen(Color.FromArgb(128,0,0,255));
+                weight = 4.0f;
             }
             else
             {
-                pen = new Pen(Color.FromArgb(128, 0, 0, 0));
+                weight = 2.0f;
+            }
+
+            if (this.IsSelected)
+            {
+                borderPen = new Pen(Color.FromArgb(128, 0, 0, 255),weight);
+                gridPen = new Pen(Color.FromArgb(128, 0, 0, 255));
+                brush = new SolidBrush(Color.FromArgb(128, 0, 0, 255));
+            }
+            else
+            {
+                borderPen = new Pen(Color.FromArgb(128, 0, 0, 0),weight);
+                gridPen = new Pen(Color.FromArgb(128, 0, 0, 0));
+                brush = new SolidBrush(Color.FromArgb(128, 0, 0, 0));
             }
 
             // 縦線
             int e1 = bounds2.Height / cellSize;
             for (int l1 = 1; l1 < e1; l1++)
             {
-                g.DrawLine(pen,
+                g.DrawLine(gridPen,
                     l1 * cellSize + bounds2.X,
                     0 + bounds2.Y,
                     l1 * cellSize + bounds2.X,
@@ -131,7 +202,7 @@ namespace Gs_No1
             for (int l1 = 1; l1 < e1; l1++)
             {
                 g.DrawLine(
-                    pen,
+                    gridPen,
                     0 + bounds2.X,
                     l1 * cellSize + bounds2.Y,
                     bounds2.Width + bounds2.X,
@@ -140,7 +211,10 @@ namespace Gs_No1
             }
 
             // 枠線
-            g.DrawRectangle(pen, bounds2);
+            g.DrawRectangle(borderPen, bounds2);
+
+            // ファイル名
+            g.DrawString( this.FileName, new Font("ＭＳ ゴシック", 12.0f), brush, bounds2.Location );
 
             //────────────────────────────────────────
             // 移動後
@@ -153,20 +227,32 @@ namespace Gs_No1
                 this.SourceBounds.Height + this.Movement.Height
                 );
 
-            if (this.IsSelected)
+            // 枠線の太さ
+            if (this.isMouseOvered)
             {
-                pen = new Pen(Color.Blue);
+                weight = 4.0f;
             }
             else
             {
-                pen = new Pen(Color.Black);
+                weight = 2.0f;
+            }
+
+            if (this.IsSelected)
+            {
+                borderPen = new Pen(Color.Blue,weight);
+                gridPen = new Pen(Color.Blue);
+            }
+            else
+            {
+                borderPen = new Pen(Color.Black, weight);
+                gridPen = new Pen(Color.Black);
             }
 
             // 縦線
             e1 = bounds2.Height / cellSize;
             for (int l1 = 1; l1 < e1; l1++)
             {
-                g.DrawLine(pen,
+                g.DrawLine(gridPen,
                     l1 * cellSize + bounds2.X,
                     0 + bounds2.Y,
                     l1 * cellSize + bounds2.X,
@@ -178,7 +264,7 @@ namespace Gs_No1
             for (int l1 = 1; l1 < e1; l1++)
             {
                 g.DrawLine(
-                    pen,
+                    gridPen,
                     0 + bounds2.X,
                     l1 * cellSize + bounds2.Y,
                     bounds2.Width + bounds2.X,
@@ -187,7 +273,47 @@ namespace Gs_No1
             }
 
             // 枠線
-            g.DrawRectangle( pen, bounds2 );
+            g.DrawRectangle( borderPen, bounds2 );
+
+            // ファイル名
+            g.DrawString(this.FileName, new Font("ＭＳ ゴシック", 12.0f), brush, bounds2.Location);
+        }
+
+        /// <summary>
+        /// 表示しているとき、指定座標が境界内なら真。
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public bool IsHit(Point location)
+        {
+            return this.IsVisible && this.Bounds.Contains(location);
+        }
+
+        public void Save(StringBuilder sb)
+        {
+            sb.Append("  <coord-mat x=\"" + this.SourceBounds.X + "\" y=\"" + this.SourceBounds.Y + "\" width=\"" + this.SourceBounds.Width + "\" height=\"" + this.SourceBounds.Height + "\" font-size=\"" + this.SourceBounds + "\" />");
+            sb.Append(Environment.NewLine);
+        }
+
+        public void Load(XmlElement xe)
+        {
+            this.Clear();
+
+            string s;
+            int x;
+            int y;
+            int w;
+            int h;
+
+            s = xe.GetAttribute("x");
+            int.TryParse(s, out x);
+            s = xe.GetAttribute("y");
+            int.TryParse(s, out y);
+            s = xe.GetAttribute("width");
+            int.TryParse(s, out w);
+            s = xe.GetAttribute("height");
+            int.TryParse(s, out h);
+            this.SourceBounds = new Rectangle(x, y, w, h);
         }
 
     }

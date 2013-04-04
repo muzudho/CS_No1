@@ -33,6 +33,22 @@ namespace Gs_No1
         }
 
         /// <summary>
+        /// マウスカーソルが合わさっています。
+        /// </summary>
+        private bool isMouseOvered;
+        public bool IsMouseOvered
+        {
+            get
+            {
+                return this.isMouseOvered;
+            }
+            set
+            {
+                this.isMouseOvered = value;
+            }
+        }
+
+        /// <summary>
         /// 境界線。
         /// </summary>
         private Rectangle bounds;
@@ -167,15 +183,26 @@ namespace Gs_No1
                     g.DrawImage(this.image, this.Bounds);
                 }
 
+                // 枠線の太さ
+                float weight;
+                if (this.isMouseOvered)
+                {
+                    weight = 4.0f;
+                }
+                else
+                {
+                    weight = 2.0f;
+                }
+
                 // 枠線の色
                 Pen pen;
                 if (this.isSelected)
                 {
-                    pen = new Pen(Color.Green, 2.0f);
+                    pen = new Pen(Color.Green, weight);
                 }
                 else
                 {
-                    pen = new Pen(Color.Black, 2.0f);
+                    pen = new Pen(Color.Black, weight);
                 }
 
                 // 枠線
@@ -218,6 +245,40 @@ namespace Gs_No1
                 {
                     System.Console.WriteLine("境界外。");
                     this.isSelected = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 表示しているとき、指定座標が境界内なら真。
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public bool IsHit(Point location)
+        {
+            return this.IsVisible && this.Bounds.Contains(location);
+        }
+
+        /// <summary>
+        /// マウスが合わさっているかどうかを判定し、状態変更します。
+        /// </summary>
+        /// <param name="location"></param>
+        public void CheckMouseOver(Point location, ref bool forcedOff)
+        {
+            if (forcedOff)
+            {
+                this.IsMouseOvered = false;
+            }
+            else
+            {
+                if (this.IsHit(location))
+                {
+                    this.IsMouseOvered = true;
+                    forcedOff = true;
+                }
+                else
+                {
+                    this.IsMouseOvered = false;
                 }
             }
         }

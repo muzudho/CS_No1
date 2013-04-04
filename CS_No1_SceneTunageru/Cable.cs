@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Drawing;
+using System.Xml;
 
 namespace Gs_No1
 {
@@ -85,8 +86,39 @@ namespace Gs_No1
             }
         }
 
+        /// <summary>
+        /// 選択中。
+        /// </summary>
+        private bool[] isSelected;
+        public bool[] IsSelected
+        {
+            get
+            {
+                return isSelected;
+            }
+            set
+            {
+                isSelected = value;
+            }
+        }
 
-        public Cable()
+        /// <summary>
+        /// マウスカーソルが合わさっています。
+        /// </summary>
+        private bool[] isMouseOvered;
+        public bool[] IsMouseOvered
+        {
+            get
+            {
+                return this.isMouseOvered;
+            }
+            set
+            {
+                this.isMouseOvered = value;
+            }
+        }
+
+        public void Clear()
         {
             this.SourceBounds = new Rectangle[]{
                 new Rectangle(100, 100, 10, 10),
@@ -102,6 +134,21 @@ namespace Gs_No1
                 false,
                 false
             };
+
+            this.IsSelected = new bool[]{
+                false,
+                false
+            };
+
+            this.IsMouseOvered = new bool[]{
+                false,
+                false
+            };
+        }
+
+        public Cable()
+        {
+            this.Clear();
         }
 
         public void Paint(Graphics g)
@@ -113,18 +160,35 @@ namespace Gs_No1
             {
                 if (this.IsVisible[i])
                 {
+                    // 線の太さ
+                    float weight;
+                    if (this.isMouseOvered[i])
+                    {
+                        weight = 4.0f;
+                    }
+                    else
+                    {
+                        weight = 2.0f;
+                    }
 
                     //────────────────────────────────────────
                     // 移動前の残像
                     //────────────────────────────────────────
 
-                    g.FillEllipse(
-                        new SolidBrush(Color.FromArgb(128, 0, 0, 0)),
+                    Rectangle bounds2 = new Rectangle(
+                        (int)(this.sourceBounds[i].X),// + weight / 2f
+                        (int)(this.sourceBounds[i].Y + weight / 2f),
+                        (int)(this.sourceBounds[i].Width),// - weight / 2f
+                        (int)(this.sourceBounds[i].Height)// - weight / 2f
+                        );
+
+                    g.DrawEllipse(
+                        new Pen(Color.FromArgb(128, 0, 0, 0), weight),
                         new Rectangle(
-                            this.sourceBounds[i].X,
-                            this.sourceBounds[i].Y,
-                            this.sourceBounds[i].Width,
-                            this.sourceBounds[i].Height
+                            bounds2.X,
+                            bounds2.Y,
+                            bounds2.Width,
+                            bounds2.Height
                             )
                         );
 
@@ -132,12 +196,41 @@ namespace Gs_No1
                     // 移動後
                     //────────────────────────────────────────
 
-                    g.FillEllipse(Brushes.Black,
+                    bounds2 = new Rectangle(
+                        (int)(this.sourceBounds[i].X + this.Movement[i].X),// + weight / 2f
+                        (int)(this.sourceBounds[i].Y + this.Movement[i].Y + weight / 2f),
+                        (int)(this.sourceBounds[i].Width + this.Movement[i].Width),// - weight / 2f
+                        (int)(this.sourceBounds[i].Height + this.Movement[i].Height)// - weight / 2f
+                        );
+
+                    // 背景色
+                    Brush backBrush;
+                    if (this.IsSelected[i])
+                    {
+                        backBrush = Brushes.Lime;
+                    }
+                    else
+                    {
+                        backBrush = Brushes.White;
+                    }
+
+                    g.FillEllipse(
+                        backBrush,
                         new Rectangle(
-                            this.sourceBounds[i].X,
-                            this.sourceBounds[i].Y,
-                            this.sourceBounds[i].Width,
-                            this.sourceBounds[i].Height
+                            bounds2.X,
+                            bounds2.Y,
+                            bounds2.Width,
+                            bounds2.Height
+                            )
+                        );
+
+                    g.DrawEllipse(
+                        new Pen(Color.Black, weight),
+                        new Rectangle(
+                            bounds2.X,
+                            bounds2.Y,
+                            bounds2.Width,
+                            bounds2.Height
                             )
                         );
                 }
@@ -146,6 +239,9 @@ namespace Gs_No1
             // ──────────
             // [0]起点　[1]終点　の接続
             // ──────────
+            //
+            // 起点が表示されている場合。
+            //
             if (this.IsVisible[0] && this.IsVisible[1])
             {
                 float weight = 2.0f;
@@ -184,10 +280,119 @@ namespace Gs_No1
 
         public void Save(StringBuilder sb)
         {
-            sb.Append("  <cable x0=\"" + this.Bounds[0].X + "\" y0=\"" + this.Bounds[0].Y + "\" visible0=\"" + this.IsVisible[0] + "\" x1=\"" + this.Bounds[1].X + "\" y1=\"" + this.Bounds[1].Y + "\" visible1=\"" + this.IsVisible[1] + "\" />");
+            sb.Append("  <cable x0=\"" + this.SourceBounds[0].X + "\" y0=\"" + this.SourceBounds[0].Y + "\" visible0=\"" + this.IsVisible[0] + "\" x1=\"" + this.SourceBounds[1].X + "\" y1=\"" + this.SourceBounds[1].Y + "\" visible1=\"" + this.IsVisible[1] + "\" />");
             sb.Append(Environment.NewLine);
 
             System.Console.WriteLine("接続線：　起点座標（" + this.Bounds[0].X + "," + this.Bounds[0].Y + "）　終点座標（" + this.Bounds[1].X + "," + this.Bounds[1].Y + "）");
+        }
+
+        public void Load(XmlElement xe)
+        {
+            this.Clear();
+
+            string s;
+            int x;
+            int y;
+            bool b;
+
+            s = xe.GetAttribute("x0");
+            int.TryParse(s, out x);
+            s = xe.GetAttribute("y0");
+            int.TryParse(s, out y);
+            this.SourceBounds[0] = new Rectangle(
+                x,
+                y,
+                UiMain.CELL_SIZE,
+                UiMain.CELL_SIZE
+                );
+            s = xe.GetAttribute("visible0");
+            bool.TryParse(s, out b);
+            this.IsVisible[0] = b;
+
+            s = xe.GetAttribute("x1");
+            int.TryParse(s, out x);
+            s = xe.GetAttribute("y1");
+            int.TryParse(s, out y);
+            this.SourceBounds[1] = new Rectangle(
+                x,
+                y,
+                UiMain.CELL_SIZE,
+                UiMain.CELL_SIZE
+                );
+            s = xe.GetAttribute("visible1");
+            bool.TryParse(s, out b);
+            this.IsVisible[1] = b;
+        }
+
+        /// <summary>
+        /// 表示しているとき、指定座標が境界内なら真。
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public bool IsHit0(Point location)
+        {
+            return this.IsVisible[0] && this.Bounds[0].Contains(location);
+        }
+
+        /// <summary>
+        /// 表示しているとき、指定座標が境界内なら真。
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public bool IsHit1(Point location)
+        {
+            return this.IsVisible[1] && this.Bounds[1].Contains(location);
+        }
+
+
+        /// <summary>
+        /// マウスが合わさっているかどうかを判定し、状態変更します。
+        /// </summary>
+        /// <param name="location"></param>
+        public bool CheckMouseOver0(Point location, ref bool forcedOff)
+        {
+            if (forcedOff)
+            {
+                this.IsMouseOvered[0] = false;
+            }
+            else
+            {
+                if (this.IsHit0(location))
+                {
+                    this.IsMouseOvered[0] = true;
+                    forcedOff = true;
+                }
+                else
+                {
+                    this.IsMouseOvered[0] = false;
+                }
+            }
+
+            return this.IsMouseOvered[0];
+        }
+
+        /// <summary>
+        /// マウスが合わさっているかどうかを判定し、状態変更します。
+        /// </summary>
+        /// <param name="location"></param>
+        public void CheckMouseOver1(Point location, ref bool forcedOff)
+        {
+            if (forcedOff)
+            {
+                this.IsMouseOvered[1] = false;
+            }
+            else
+            {
+                if (this.IsHit1(location))
+                {
+                    this.IsMouseOvered[1] = true;
+                    forcedOff = true;
+                }
+                else
+                {
+                    this.IsMouseOvered[1] = false;
+                }
+            }
         }
 
     }
