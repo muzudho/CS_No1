@@ -129,12 +129,49 @@ namespace Gs_No1
             }
         }
 
+
+
+        /// <summary>
+        /// フォント名。
+        /// </summary>
+        private string fontName;
+        public string FontName
+        {
+            get
+            {
+                return fontName;
+            }
+            set
+            {
+                fontName = value;
+            }
+        }
+
+        /// <summary>
+        /// フォントサイズ。
+        /// </summary>
+        private float fontSize;
+        public float FontSize
+        {
+            get
+            {
+                return fontSize;
+            }
+            set
+            {
+                fontSize = value;
+            }
+        }
+
+
         public void Clear()
         {
             this.sourceBounds = new Rectangle(100, 100, 20 * UiMain.CELL_SIZE, 20 * UiMain.CELL_SIZE);
             this.Movement = new Rectangle();
             this.fileName = "noname.png";
             this.IsVisible = true;
+            this.FontName = "ＭＳ ゴシック";
+            this.fontSize = 12.0f;
         }
 
         public CoordMat()
@@ -175,15 +212,17 @@ namespace Gs_No1
 
             if (this.IsSelected)
             {
+                // 青色
                 borderPen = new Pen(Color.FromArgb(128, 0, 0, 255),weight);
                 gridPen = new Pen(Color.FromArgb(128, 0, 0, 255));
                 brush = new SolidBrush(Color.FromArgb(128, 0, 0, 255));
             }
             else
             {
-                borderPen = new Pen(Color.FromArgb(128, 0, 0, 0),weight);
-                gridPen = new Pen(Color.FromArgb(128, 0, 0, 0));
-                brush = new SolidBrush(Color.FromArgb(128, 0, 0, 0));
+                // 灰色
+                borderPen = new Pen(Color.FromArgb(128, 192, 192, 192), weight);
+                gridPen = new Pen(Color.FromArgb(128, 192, 192, 192));
+                brush = new SolidBrush(Color.FromArgb(128, 192, 192, 192));
             }
 
             // 縦線
@@ -214,7 +253,7 @@ namespace Gs_No1
             g.DrawRectangle(borderPen, bounds2);
 
             // ファイル名
-            g.DrawString( this.FileName, new Font("ＭＳ ゴシック", 12.0f), brush, bounds2.Location );
+            g.DrawString( this.FileName, new Font(this.FontName, this.FontSize), brush, bounds2.Location );
 
             //────────────────────────────────────────
             // 移動後
@@ -239,13 +278,15 @@ namespace Gs_No1
 
             if (this.IsSelected)
             {
+                // 青色
                 borderPen = new Pen(Color.Blue,weight);
                 gridPen = new Pen(Color.Blue);
             }
             else
             {
-                borderPen = new Pen(Color.Black, weight);
-                gridPen = new Pen(Color.Black);
+                // 灰色
+                borderPen = new Pen(Color.FromArgb(128, 192, 192, 192), weight);
+                gridPen = new Pen(Color.FromArgb(128, 192, 192, 192));
             }
 
             // 縦線
@@ -276,7 +317,7 @@ namespace Gs_No1
             g.DrawRectangle( borderPen, bounds2 );
 
             // ファイル名
-            g.DrawString(this.FileName, new Font("ＭＳ ゴシック", 12.0f), brush, bounds2.Location);
+            g.DrawString(this.FileName, new Font(this.FontName, this.FontSize), brush, bounds2.Location);
         }
 
         /// <summary>
@@ -291,7 +332,10 @@ namespace Gs_No1
 
         public void Save(StringBuilder sb)
         {
-            sb.Append("  <coord-mat x=\"" + this.SourceBounds.X + "\" y=\"" + this.SourceBounds.Y + "\" width=\"" + this.SourceBounds.Width + "\" height=\"" + this.SourceBounds.Height + "\" font-size=\"" + this.SourceBounds + "\" />");
+            sb.Append("  <coord-mat");
+            sb.Append(" x=\"" + this.SourceBounds.X + "\" y=\"" + this.SourceBounds.Y + "\" width=\"" + this.SourceBounds.Width + "\" height=\"" + this.SourceBounds.Height + "\"");
+            sb.Append(" font-name=\"" + this.FontName + "\" font-size=\"" + this.FontSize + "\"");
+            sb.Append(" />");
             sb.Append(Environment.NewLine);
         }
 
@@ -314,6 +358,8 @@ namespace Gs_No1
             s = xe.GetAttribute("height");
             int.TryParse(s, out h);
             this.SourceBounds = new Rectangle(x, y, w, h);
+
+            this.FontName = xe.GetAttribute("font-name");
         }
 
     }

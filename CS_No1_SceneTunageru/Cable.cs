@@ -283,7 +283,7 @@ namespace Gs_No1
             sb.Append("  <cable x0=\"" + this.SourceBounds[0].X + "\" y0=\"" + this.SourceBounds[0].Y + "\" visible0=\"" + this.IsVisible[0] + "\" x1=\"" + this.SourceBounds[1].X + "\" y1=\"" + this.SourceBounds[1].Y + "\" visible1=\"" + this.IsVisible[1] + "\" />");
             sb.Append(Environment.NewLine);
 
-            System.Console.WriteLine("接続線：　起点座標（" + this.Bounds[0].X + "," + this.Bounds[0].Y + "）　終点座標（" + this.Bounds[1].X + "," + this.Bounds[1].Y + "）");
+            //ystem.Console.WriteLine("接続線：　起点座標（" + this.Bounds[0].X + "," + this.Bounds[0].Y + "）　終点座標（" + this.Bounds[1].X + "," + this.Bounds[1].Y + "）");
         }
 
         public void Load(XmlElement xe)

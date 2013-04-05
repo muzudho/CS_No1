@@ -238,12 +238,12 @@ namespace Gs_No1
             {
                 if (this.Bounds.Contains(e.Location))
                 {
-                    System.Console.WriteLine("範囲内。mouse(" + e.X + "," + e.Y + ") bounds(" + this.Bounds.X + "," + this.Bounds.Y + "," + this.Bounds.Width + "," + this.Bounds.Height + ")");
+                    //ystem.Console.WriteLine("範囲内。mouse(" + e.X + "," + e.Y + ") bounds(" + this.Bounds.X + "," + this.Bounds.Y + "," + this.Bounds.Width + "," + this.Bounds.Height + ")");
                     this.isSelected = true;
                 }
                 else
                 {
-                    System.Console.WriteLine("境界外。");
+                    //ystem.Console.WriteLine("境界外。");
                     this.isSelected = false;
                 }
             }

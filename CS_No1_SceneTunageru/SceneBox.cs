@@ -64,6 +64,22 @@ namespace Gs_No1
         }
 
         /// <summary>
+        /// フォント名。
+        /// </summary>
+        private string fontName;
+        public string FontName
+        {
+            get
+            {
+                return fontName;
+            }
+            set
+            {
+                fontName = value;
+            }
+        }
+
+        /// <summary>
         /// フォントサイズ。
         /// </summary>
         private float fontSize;
@@ -147,6 +163,21 @@ namespace Gs_No1
             }
         }
 
+        /// <summary>
+        /// 形状。0:シーン。1:分岐。2:説明。
+        /// </summary>
+        private int shape;
+        public int Shape
+        {
+            get
+            {
+                return shape;
+            }
+            set
+            {
+                shape = value;
+            }
+        }
 
 
         public void Clear()
@@ -154,8 +185,10 @@ namespace Gs_No1
             this.title = "名無し";
             this.sourceBounds = new Rectangle(0, 0, 100, 100);
             this.Movement = new Rectangle();
+            this.FontName = "ＭＳ ゴシック";
             this.fontSize = 12.0f;
             this.IsVisible = true;
+            this.Shape = 0;
         }
 
         /// <summary>
@@ -164,6 +197,39 @@ namespace Gs_No1
         public SceneBox()
         {
             this.Clear();
+        }
+
+        public SceneBox Clone()
+        {
+            SceneBox scene = new SceneBox();
+
+            scene.FontSize = this.FontSize;
+
+            scene.IsMouseOvered = this.IsMouseOvered;
+
+            scene.IsSelected = this.IsSelected;
+
+            scene.IsVisible = this.IsVisible;
+
+            scene.Movement = new Rectangle(
+                this.Movement.X,
+                this.Movement.Y,
+                this.Movement.Width,
+                this.Movement.Height
+                );
+
+            scene.Shape = this.Shape;
+
+            scene.SourceBounds = new Rectangle(
+                this.SourceBounds.X,
+                this.SourceBounds.Y,
+                this.SourceBounds.Width,
+                this.SourceBounds.Height
+                );
+
+            scene.Title = this.Title;
+
+            return scene;
         }
 
 
@@ -179,6 +245,7 @@ namespace Gs_No1
             {
                 weight = 2.0f;
             }
+
 
             //────────────────────────────────────────
             // 移動前の残像
@@ -198,13 +265,38 @@ namespace Gs_No1
 
                 pen = new Pen(Color.FromArgb(128, 0, 0, 0), weight);
 
-                // 枠線
-                g.DrawRectangle(pen, bounds2);
+                if (this.Shape == 1)
+                {
+                    // ひし形
+                    Point[] points = new Point[]{
+                        new Point( bounds2.X+bounds2.Width/2, bounds2.Y-bounds2.Height/3 ),//上
+                        new Point( bounds2.X+bounds2.Width+bounds2.Width/3, bounds2.Y+bounds2.Height/2 ),//右
+                        new Point( bounds2.X+bounds2.Width/2, bounds2.Y+bounds2.Height+bounds2.Height/3 ),//下
+                        new Point( bounds2.X-bounds2.Width/3, bounds2.Y+bounds2.Height/2 ),//左
+                        new Point( bounds2.X+bounds2.Width/2, bounds2.Y-bounds2.Height/3 ),//上
+                    };
+                    g.DrawLines(pen,points);
+                }
+                else if (this.Shape == 2)
+                {
+                    // 解説用
+                    g.DrawEllipse(pen, new Rectangle(
+                        bounds2.X - 4,
+                        bounds2.Y - 4,
+                        8,
+                        8
+                        ));
+                }
+                else
+                {
+                    // 枠線
+                    g.DrawRectangle(pen, bounds2);
+                }
 
                 // タイトル
                 g.DrawString(
                     this.title,
-                    new Font("ＭＳ ゴシック", this.FontSize),
+                    new Font(this.FontName, this.FontSize),
                     new SolidBrush(Color.FromArgb(128, 0, 0, 0)),
                     new Point(
                         (int)(bounds2.X + weight),
@@ -235,15 +327,41 @@ namespace Gs_No1
             {
                 backBrush = Brushes.White;
             }
-            g.FillRectangle(backBrush, bounds2);
 
-            // 枠線
-            g.DrawRectangle(pen, bounds2);
+            if (this.Shape == 1)
+            {
+                // ひし形
+                Point[] points = new Point[]{
+                        new Point( bounds2.X+bounds2.Width/2, bounds2.Y-bounds2.Height/3 ),//上
+                        new Point( bounds2.X+bounds2.Width+bounds2.Width/3, bounds2.Y+bounds2.Height/2 ),//右
+                        new Point( bounds2.X+bounds2.Width/2, bounds2.Y+bounds2.Height+bounds2.Height/3 ),//下
+                        new Point( bounds2.X-bounds2.Width/3, bounds2.Y+bounds2.Height/2 ),//左
+                        new Point( bounds2.X+bounds2.Width/2, bounds2.Y-bounds2.Height/3 ),//上
+                    };
+                g.FillPolygon(backBrush,points);
+                g.DrawLines(pen, points);
+            }
+            else if (this.Shape == 2)
+            {
+                // 解説用
+                g.DrawEllipse(pen, new Rectangle(
+                    bounds2.X - 4,
+                    bounds2.Y - 4,
+                    8,
+                    8
+                    ));
+            }
+            else
+            {
+                // 枠線
+                g.FillRectangle(backBrush, bounds2);
+                g.DrawRectangle(pen, bounds2);
+            }
 
             // タイトル
             g.DrawString(
                 this.title,
-                new Font("ＭＳ ゴシック", this.FontSize),
+                new Font(this.FontName, this.FontSize),
                 Brushes.Black,
                 new Point(
                     (int)(bounds2.X + weight),
@@ -255,10 +373,15 @@ namespace Gs_No1
 
         public void Save(StringBuilder sb)
         {
-            sb.Append("  <scene title=\"" + this.Title + "\" x=\"" + this.SourceBounds.X + "\" y=\"" + this.SourceBounds.Y + "\" width=\"" + this.SourceBounds.Width + "\" height=\"" + this.SourceBounds.Height + "\" font-size=\"" + this.SourceBounds + "\" />");
+            sb.Append("  <scene");
+            sb.Append(" title=\"" + this.Title + "\"");
+            sb.Append(" x=\"" + this.SourceBounds.X + "\" y=\"" + this.SourceBounds.Y + "\" width=\"" + this.SourceBounds.Width + "\" height=\"" + this.SourceBounds.Height + "\"");
+            sb.Append(" font-name=\"" + this.FontName + "\" font-size=\"" + this.FontSize + "\"");
+            sb.Append(" shape=\"" + this.shape + "\"");
+            sb.Append(" />");
             sb.Append(Environment.NewLine);
 
-            System.Console.WriteLine("シーン：　座標（" + this.Bounds.X + "," + this.Bounds.Y + "）　タイトル（" + this.Title + "）");
+            //ystem.Console.WriteLine("シーン：　座標（" + this.Bounds.X + "," + this.Bounds.Y + "）　タイトル（" + this.Title + "）");
         }
 
         public void Load(XmlElement xe)
@@ -288,6 +411,9 @@ namespace Gs_No1
                 w,
                 h
                 );
+
+            this.FontName = xe.GetAttribute("font-name");
+
             s = xe.GetAttribute("font-size");
             if (float.TryParse(s, out fontSize))
             {
@@ -300,7 +426,14 @@ namespace Gs_No1
                     this.FontSize = 8.0f;// TODO:フォントサイズ
                 }
             }
-            System.Console.WriteLine("fontSize=" + fontSize + "　this.FontSize=" + this.FontSize);
+            //ystem.Console.WriteLine("fontSize=" + fontSize + "　this.FontSize=" + this.FontSize);
+
+            int n;
+            s = xe.GetAttribute("shape");
+            if (int.TryParse(s, out n))
+            {
+                this.Shape = n;
+            }
         }
         
         /// <summary>
