@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<scene-tunageru>
+  <ui-main coord-mat-repeat-x="2" coord-mat-repeat-y="5" />
+  <coord-mat x="235" y="-1466" width="400" height="400" font-name="" font-size="12" />
+  <scene title="title
+タイトル画面" x="435" y="-1306" width="120" height="60" font-name="M+ 2m regular" font-size="12" shape="0" />
+  <scene title="name
+名前入力画面" x="435" y="-1146" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="load
+ロードファイル
+画面" x="595" y="-1146" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="prolog
+プロローグ画面" x="435" y="-966" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="stgsel
+ステージ
+セレクト" x="435" y="-846" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="chrsel
+キャラクター
+選択画面" x="455" y="-726" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="battle
+バトル画面" x="455" y="-586" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="win
+勝利画面" x="455" y="-246" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="talk
+会話画面" x="455" y="-106" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="ending
+エンディング
+画面" x="455" y="214" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="staff
+スタッフロール
+画面" x="455" y="394" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="map
+マップ画面" x="635" y="-506" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="menu
+メニュー画面" x="815" y="-506" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="lose
+敗北画面" x="715" y="-246" width="120" height="60" font-name="" font-size="12" shape="0" />
+  <scene title="　最終ステ
+ージクリアー？" x="455" y="54" width="120" height="60" font-name="" font-size="12" shape="1" />
+  <scene title="下ボタン
+（はじめから）" x="375" y="-1186" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="右ボタン
+（つづきから）" x="675" y="-1186" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="415" y="-1046" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="675" y="-1026" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="415" y="-886" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="435" y="-766" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="435" y="-666" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="上ボタン
+（メニューを
+　開いた）" x="795" y="-646" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="615" y="-446" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン
+（閉じる）" x="815" y="-426" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="右ボタン
+（ギブアップ）" x="915" y="-426" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="左ボタン
+（勝ち）" x="435" y="-286" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="左ボタン
+（負け）" x="795" y="-286" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="435" y="-166" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン" x="1195" y="-26" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="右ボタン
+（Ｎｏ）" x="635" y="54" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン
+（Ｙｅｓ）" x="555" y="474" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン
+（Ｙｅｓ）" x="535" y="174" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="下ボタン
+（Ｙｅｓ）" x="535" y="274" width="120" height="60" font-name="" font-size="12" shape="2" />
+  <scene title="起動" x="435" y="-1446" width="120" height="60" font-name="ＭＳ ゴシック" font-size="12" shape="0" />
+  <cable x0="495" y0="-1406" visible0="True" x1="495" y1="-1306" visible1="True" />
+  <cable x0="495" y0="-1246" visible0="True" x1="495" y1="-1166" visible1="True" />
+  <cable x0="495" y0="-1206" visible0="True" x1="655" y1="-1166" visible1="True" />
+  <cable x0="495" y0="-1086" visible0="True" x1="495" y1="-986" visible1="True" />
+  <cable x0="495" y0="-886" visible0="True" x1="655" y1="-1086" visible1="True" />
+  <cable x0="495" y0="-906" visible0="True" x1="495" y1="-846" visible1="True" />
+  <cable x0="515" y0="-786" visible0="True" x1="515" y1="-746" visible1="True" />
+  <cable x0="515" y0="-666" visible0="True" x1="515" y1="-606" visible1="True" />
+  <cable x0="515" y0="-526" visible0="True" x1="515" y1="-266" visible1="True" />
+  <cable x0="515" y0="-186" visible0="True" x1="515" y1="-126" visible1="True" />
+  <cable x0="515" y0="-46" visible0="True" x1="515" y1="34" visible1="True" />
+  <cable x0="515" y0="274" visible0="True" x1="515" y1="374" visible1="True" />
+  <cable x0="515" y0="454" visible0="True" x1="515" y1="514" visible1="True" />
+  <cable x0="495" y0="514" visible0="True" x1="255" y1="514" visible1="True" />
+  <cable x0="255" y0="494" visible0="True" x1="255" y1="-1326" visible1="True" />
+  <cable x0="255" y0="-1346" visible0="True" x1="495" y1="-1346" visible1="True" />
+  <cable x0="575" y0="-566" visible0="True" x1="695" y1="-526" visible1="True" />
+  <cable x0="695" y0="-446" visible0="True" x1="695" y1="-386" visible1="True" />
+  <cable x0="675" y0="-386" visible0="True" x1="335" y1="-386" visible1="True" />
+  <cable x0="335" y0="-406" visible0="True" x1="335" y1="-626" visible1="True" />
+  <cable x0="355" y0="-626" visible0="True" x1="495" y1="-626" visible1="True" />
+  <cable x0="575" y0="-586" visible0="True" x1="875" y1="-526" visible1="True" />
+  <cable x0="875" y0="-446" visible0="True" x1="875" y1="-326" visible1="True" />
+  <cable x0="855" y0="-326" visible0="True" x1="335" y1="-326" visible1="True" />
+  <cable x0="335" y0="-346" visible0="True" x1="335" y1="-366" visible1="True" />
+  <cable x0="535" y0="-286" visible0="True" x1="735" y1="-266" visible1="True" />
+  <cable x0="735" y0="-186" visible0="True" x1="735" y1="-146" visible1="True" />
+  <cable x0="715" y0="-146" visible0="True" x1="535" y1="-146" visible1="True" />
+  <cable x0="515" y0="134" visible0="True" x1="515" y1="194" visible1="True" />
+  <cable x0="615" y0="74" visible0="True" x1="695" y1="154" visible1="True" />
+  <cable x0="675" y0="154" visible0="True" x1="335" y1="154" visible1="True" />
+  <cable x0="335" y0="134" visible0="True" x1="335" y1="-306" visible1="True" />
+  <cable x0="935" y0="-486" visible0="True" x1="955" y1="154" visible1="True" />
+  <cable x0="935" y0="154" visible0="True" x1="715" y1="154" visible1="True" />
+</scene-tunageru>
