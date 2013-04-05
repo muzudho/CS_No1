@@ -1,4 +1,11 @@
+（１）  
 このサイトの上の方に並んでいる、**ZIP**ボタンを押すと一括ダウンロードできます。  
+（２）  
+『Microsoft Visual Studio Express 2012 for Windows Desktop』
+という無料ソフトを使って、コンパイルしてください。  
+（３）
+img_and_saveフォルダーに、画像とセーブファイルが入っています。  
+bin/Debugフォルダーの下に出してください。  
 
 
 
