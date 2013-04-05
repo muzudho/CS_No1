@@ -203,106 +203,113 @@ namespace Gs_No1
 
 
                 XmlDocument doc = new XmlDocument();
-                doc.Load("save.xml");
-                //ystem.Console.WriteLine("要素数="+doc.DocumentElement.ChildNodes.Count);
-
-                foreach (XmlNode xn in doc.DocumentElement.ChildNodes)
+                try
                 {
-                    if (xn.NodeType == XmlNodeType.Element)
+                    doc.Load("save.xml");
+                    //ystem.Console.WriteLine("要素数="+doc.DocumentElement.ChildNodes.Count);
+
+                    foreach (XmlNode xn in doc.DocumentElement.ChildNodes)
                     {
-                        XmlElement xe = (XmlElement)xn;
-                        string s;
-                        bool b;
-                        int x;
-                        int y;
-                        int w;
-                        int h;
-                        switch (xe.Name)
+                        if (xn.NodeType == XmlNodeType.Element)
                         {
-                            // ──────────
-                            // UiMain
-                            // ──────────
-                            case "ui-main":
-                                s = xe.GetAttribute("coord-mat-repeat-x");
-                                int.TryParse(s, out x);
-                                this.coordMatRepeatX = x;
-                                s = xe.GetAttribute("coord-mat-repeat-y");
-                                int.TryParse(s, out y);
-                                this.coordMatRepeatY = y;
-                                break;
+                            XmlElement xe = (XmlElement)xn;
+                            string s;
+                            bool b;
+                            int x;
+                            int y;
+                            int w;
+                            int h;
+                            switch (xe.Name)
+                            {
+                                // ──────────
+                                // UiMain
+                                // ──────────
+                                case "ui-main":
+                                    s = xe.GetAttribute("coord-mat-repeat-x");
+                                    int.TryParse(s, out x);
+                                    this.coordMatRepeatX = x;
+                                    s = xe.GetAttribute("coord-mat-repeat-y");
+                                    int.TryParse(s, out y);
+                                    this.coordMatRepeatY = y;
+                                    break;
 
-                            // ──────────
-                            // 座標マット
-                            // ──────────
-                            case "coord-mat":
-                                this.coordMat.Load(xe);
-                                break;
+                                // ──────────
+                                // 座標マット
+                                // ──────────
+                                case "coord-mat":
+                                    this.coordMat.Load(xe);
+                                    break;
 
-                            // ──────────
-                            // シーン
-                            // ──────────
-                            case "scene":
-                                SceneBox scene = new SceneBox();
-                                scene.Load(xe);
-                                this.SceneBoxList.Add(scene);
-                                break;
+                                // ──────────
+                                // シーン
+                                // ──────────
+                                case "scene":
+                                    SceneBox scene = new SceneBox();
+                                    scene.Load(xe);
+                                    this.SceneBoxList.Add(scene);
+                                    break;
 
-                            // ──────────
-                            // 接続線
-                            // ──────────
-                            case "cable":
-                                Cable cable = new Cable();
-                                cable.Load(xe);
+                                // ──────────
+                                // 接続線
+                                // ──────────
+                                case "cable":
+                                    Cable cable = new Cable();
+                                    cable.Load(xe);
 
-                                this.CableList.Add(cable);
-                                break;
+                                    this.CableList.Add(cable);
+                                    break;
+                            }
                         }
                     }
-                }
 
-                //────────────────────────────────────────
-                // グリッドのずれ修正
-                //────────────────────────────────────────
+                    //────────────────────────────────────────
+                    // グリッドのずれ修正
+                    //────────────────────────────────────────
 
-                // ──────────
-                // 全シーン
-                // ──────────
-                foreach (SceneBox scene in this.SceneBoxList)
-                {
-                    if (
-                        0 != (scene.SourceBounds.X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE ||
-                        0 != (scene.SourceBounds.Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE
-                        )
-                    {
-                        scene.SourceBounds = new Rectangle(
-                            scene.SourceBounds.X - (scene.SourceBounds.X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE,
-                            scene.SourceBounds.Y - (scene.SourceBounds.Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE,
-                            scene.SourceBounds.Width,
-                            scene.SourceBounds.Height
-                            );
-                    }
-                }
-
-                // ──────────
-                // 全接続線
-                // ──────────
-                foreach (Cable cable in this.CableList)
-                {
-                    for (int i = 0; i < 2; i++)
+                    // ──────────
+                    // 全シーン
+                    // ──────────
+                    foreach (SceneBox scene in this.SceneBoxList)
                     {
                         if (
-                            0 != (cable.SourceBounds[i].X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE ||
-                            0 != (cable.SourceBounds[i].Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE
+                            0 != (scene.SourceBounds.X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE ||
+                            0 != (scene.SourceBounds.Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE
                             )
                         {
-                            cable.SourceBounds[i] = new Rectangle(
-                                cable.SourceBounds[i].X - (cable.SourceBounds[i].X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE,
-                                cable.SourceBounds[i].Y - (cable.SourceBounds[i].Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE,
-                                cable.SourceBounds[i].Width,
-                                cable.SourceBounds[i].Height
+                            scene.SourceBounds = new Rectangle(
+                                scene.SourceBounds.X - (scene.SourceBounds.X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE,
+                                scene.SourceBounds.Y - (scene.SourceBounds.Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE,
+                                scene.SourceBounds.Width,
+                                scene.SourceBounds.Height
                                 );
                         }
                     }
+
+                    // ──────────
+                    // 全接続線
+                    // ──────────
+                    foreach (Cable cable in this.CableList)
+                    {
+                        for (int i = 0; i < 2; i++)
+                        {
+                            if (
+                                0 != (cable.SourceBounds[i].X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE ||
+                                0 != (cable.SourceBounds[i].Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE
+                                )
+                            {
+                                cable.SourceBounds[i] = new Rectangle(
+                                    cable.SourceBounds[i].X - (cable.SourceBounds[i].X - this.coordMat.SourceBounds.X) % UiMain.CELL_SIZE,
+                                    cable.SourceBounds[i].Y - (cable.SourceBounds[i].Y - this.coordMat.SourceBounds.Y) % UiMain.CELL_SIZE,
+                                    cable.SourceBounds[i].Width,
+                                    cable.SourceBounds[i].Height
+                                    );
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    // セーブファイルが無いなど。
                 }
 
                 this.Refresh();
