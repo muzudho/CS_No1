@@ -95,16 +95,37 @@ namespace Gs_No1
             }
         }
 
+        /// <summary>
+        /// ボタン領域の下端。
+        /// </summary>
+        private int buttonAreaBottom;
+
+        /// <summary>
+        /// グリッド行カーソル。
+        /// </summary>
+        private int rowCursorY;
+        private bool isRowCursorYEnable;
+        /// <summary>
+        /// グリッド列カーソル。
+        /// </summary>
+        private int rowCursorX;
+        private bool isRowCursorXEnable;
 
         public void Clear()
         {
             this.coordMatRepeatX = 1;
             this.coordMatRepeatY = 1;
+            this.rowCursorX = 0;
+            this.isRowCursorXEnable = false;
+            this.rowCursorY = 0;
+            this.isRowCursorYEnable = false;
         }
 
         public UiMain()
         {
             this.Clear();
+
+            this.buttonAreaBottom = 3 * 50 + 5;
             this.clickedLocation = new Point();
             // 座標マット
             this.coordMat = new CoordMat();
@@ -378,6 +399,72 @@ namespace Gs_No1
                             this.coordMat.IsSelected = isSelected2;
 
                             // ──────────
+                            // 全接続線BC　描画
+                            // ──────────
+                            foreach (Cable cable in this.CableList)
+                            {
+                                Rectangle[] old = new Rectangle[2];
+
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    old[i] = new Rectangle(
+                                        cable.SourceBounds[i].X,
+                                        cable.SourceBounds[i].Y,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+
+                                    cable.SourceBounds[i] = new Rectangle(
+                                        cable.SourceBounds[i].X - c * this.coordMat.SourceBounds.Width - this.coordMat.SourceBounds.X,
+                                        cable.SourceBounds[i].Y - r * this.coordMat.SourceBounds.Height - this.coordMat.SourceBounds.Y,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+                                }
+
+                                cable.PaintBackCircle(g);
+
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    cable.SourceBounds[i] = old[i];
+                                }
+
+                            }
+
+                            // ──────────
+                            // 全接続線L　描画
+                            // ──────────
+                            foreach (Cable cable in this.CableList)
+                            {
+                                Rectangle[] old = new Rectangle[2];
+
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    old[i] = new Rectangle(
+                                        cable.SourceBounds[i].X,
+                                        cable.SourceBounds[i].Y,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+
+                                    cable.SourceBounds[i] = new Rectangle(
+                                        cable.SourceBounds[i].X - c * this.coordMat.SourceBounds.Width - this.coordMat.SourceBounds.X,
+                                        cable.SourceBounds[i].Y - r * this.coordMat.SourceBounds.Height - this.coordMat.SourceBounds.Y,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+                                }
+
+                                cable.PaintLine(g);
+
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    cable.SourceBounds[i] = old[i];
+                                }
+
+                            }
+
+                            // ──────────
                             // 全シーン　描画
                             // ──────────
                             foreach (SceneBox scene in this.SceneBoxList)
@@ -401,7 +488,7 @@ namespace Gs_No1
                             }
 
                             // ──────────
-                            // 全接続線　描画
+                            // 全接続線F　描画
                             // ──────────
                             foreach (Cable cable in this.CableList)
                             {
@@ -424,7 +511,7 @@ namespace Gs_No1
                                         );
                                 }
 
-                                cable.Paint(g);
+                                cable.PaintMouseMark(g);
 
                                 for (int i = 0; i < 2; i++)
                                 {
@@ -467,6 +554,10 @@ namespace Gs_No1
                 this.buttons["reductR"].IsVisible = true;
                 this.buttons["reductB"].IsVisible = true;
                 this.buttons["reductL"].IsVisible = true;
+                this.buttons["detachesH"].IsVisible = true;
+                this.buttons["detachesV"].IsVisible = true;
+                this.buttons["shortenH"].IsVisible = true;
+                this.buttons["shortenV"].IsVisible = true;
             };
             btn.SwitchOffAction = () => {
                 this.coordMat.IsSelected = false;
@@ -480,6 +571,10 @@ namespace Gs_No1
                 this.buttons["reductR"].IsVisible = false;
                 this.buttons["reductB"].IsVisible = false;
                 this.buttons["reductL"].IsVisible = false;
+                this.buttons["detachesH"].IsVisible = false;
+                this.buttons["detachesV"].IsVisible = false;
+                this.buttons["shortenH"].IsVisible = false;
+                this.buttons["shortenV"].IsVisible = false;
             };
             // シーンボタン
             btn = new GraphicButton();
@@ -770,6 +865,30 @@ namespace Gs_No1
                     this.Refresh();
                 }
             };
+            // 離す横
+            btn = new GraphicButton();
+            btn.Id = "detachesH";
+            this.buttons[btn.Id] = btn;
+            btn.FilePath = "img/btn_DetachesH.png";
+            btn.Bounds = new Rectangle(12 * 50, 0 * 50 + 75, 50, 50);
+            // 離す縦
+            btn = new GraphicButton();
+            btn.Id = "detachesV";
+            this.buttons[btn.Id] = btn;
+            btn.FilePath = "img/btn_DetachesV.png";
+            btn.Bounds = new Rectangle(13 * 50, 0 * 50 + 75, 50, 50);
+            // 縮める横
+            btn = new GraphicButton();
+            btn.Id = "shortenH";
+            this.buttons[btn.Id] = btn;
+            btn.FilePath = "img/btn_ShortenH.png";
+            btn.Bounds = new Rectangle(14 * 50, 0 * 50 + 75, 50, 50);
+            // 縮める縦
+            btn = new GraphicButton();
+            btn.Id = "shortenV";
+            this.buttons[btn.Id] = btn;
+            btn.FilePath = "img/btn_ShortenV.png";
+            btn.Bounds = new Rectangle(15 * 50, 0 * 50 + 75, 50, 50);
             // テキストボタン
             btn = new GraphicButton();
             btn.Id = "text";
@@ -904,24 +1023,73 @@ namespace Gs_No1
             }
             this.coordMat.SourceBounds = new Rectangle(x,y,width,height);
 
+            // ──────────
+            // 全接続線BC
+            // ──────────
+            foreach (Cable cable in this.CableList)
+            {
+                cable.PaintBackCircle(g);
+            }
+
+            // ──────────
+            // 全接続線L
+            // ──────────
+            foreach (Cable cable in this.CableList)
+            {
+                cable.PaintLine(g);
+            }
+
+            // ──────────
             // シーンボックス
+            // ──────────
             foreach (SceneBox scene in this.SceneBoxList)
             {
                 scene.Paint(g);
             }
 
-            // ケーブル
+            // ──────────
+            // 全接続線F
+            // ──────────
             foreach (Cable cable in this.CableList)
             {
-                cable.Paint(g);
+                cable.PaintMouseMark(g);
             }
 
+
+            // ──────────
+            // 列カーソル、行カーソル
+            // ──────────
+            if (this.isRowCursorXEnable)
+            {
+                g.FillRectangle(
+                    new SolidBrush(Color.FromArgb(128,0,255,0)),//半透明の緑色
+                    this.rowCursorX,
+                    0,
+                    UiMain.CELL_SIZE,
+                    this.Height
+                    );
+            }
+
+            if (this.isRowCursorYEnable)
+            {
+                g.FillRectangle(
+                    new SolidBrush(Color.FromArgb(128, 0, 255, 0)),//半透明の緑色
+                    0,
+                    this.rowCursorY,
+                    this.Width,
+                    UiMain.CELL_SIZE
+                    );
+            }
+
+
+            // ──────────
             // ボタン背景
+            // ──────────
             g.FillRectangle(new SolidBrush(Color.FromArgb(128, 0, 0, 0)), new Rectangle(
                 0,
                 0,
                 this.Width,
-                3*50+5
+                this.buttonAreaBottom
                 ));
 
             // 各種ボタン
@@ -940,6 +1108,10 @@ namespace Gs_No1
             this.buttons["reductR"].Paint(g);
             this.buttons["reductB"].Paint(g);
             this.buttons["reductL"].Paint(g);
+            this.buttons["detachesH"].Paint(g);
+            this.buttons["detachesV"].Paint(g);
+            this.buttons["shortenH"].Paint(g);
+            this.buttons["shortenV"].Paint(g);
             this.buttons["text"].Paint(g);
             this.buttons["create"].Paint(g);
             this.buttons["copy"].Paint(g);
@@ -1108,6 +1280,35 @@ namespace Gs_No1
             if (this.buttons["reductL"].IsHit(e.Location))
             {
                 this.buttons["reductL"].PerformSwitchOn(sender, e);
+                actorReleased = true;
+                buttonReleased = true;
+            }
+
+            // 離す、詰める
+            if (this.buttons["detachesH"].IsHit(e.Location))
+            {
+                this.buttons["detachesH"].PerformSwitchOn(sender, e);
+                actorReleased = true;
+                buttonReleased = true;
+            }
+
+            if (this.buttons["detachesV"].IsHit(e.Location))
+            {
+                this.buttons["detachesV"].PerformSwitchOn(sender, e);
+                actorReleased = true;
+                buttonReleased = true;
+            }
+
+            if (this.buttons["shortenH"].IsHit(e.Location))
+            {
+                this.buttons["shortenH"].PerformSwitchOn(sender, e);
+                actorReleased = true;
+                buttonReleased = true;
+            }
+
+            if (this.buttons["shortenV"].IsHit(e.Location))
+            {
+                this.buttons["shortenV"].PerformSwitchOn(sender, e);
                 actorReleased = true;
                 buttonReleased = true;
             }
@@ -1355,6 +1556,8 @@ namespace Gs_No1
             //────────────────────────────────────────
             // 何もないところでマウスボタン押下したかどうか
             //────────────────────────────────────────
+            #region 何もないところでマウスボタン押下したかどうか
+
             bool actorPressed = false;//ボタン、シーン、接続線のいずれかの上で放したら真
             bool buttonReleased = false;//ボタンの上で放したら真
 
@@ -1454,6 +1657,31 @@ namespace Gs_No1
                 buttonReleased = true;
             }
 
+            // 離す、縮める
+            if (this.buttons["detachesH"].IsHit(e.Location))
+            {
+                actorPressed = true;
+                buttonReleased = true;
+            }
+
+            if (this.buttons["detachesV"].IsHit(e.Location))
+            {
+                actorPressed = true;
+                buttonReleased = true;
+            }
+
+            if (this.buttons["shortenH"].IsHit(e.Location))
+            {
+                actorPressed = true;
+                buttonReleased = true;
+            }
+
+            if (this.buttons["shortenV"].IsHit(e.Location))
+            {
+                actorPressed = true;
+                buttonReleased = true;
+            }
+
             // テキスト
             if (this.buttons["text"].IsHit(e.Location))
             {
@@ -1548,6 +1776,7 @@ namespace Gs_No1
                 }
             }
 
+            #endregion
 
 
             // マウスボタンを押した地点を設定。
@@ -1557,7 +1786,10 @@ namespace Gs_No1
             // マウスボタンを放した地点を消す。
             this.isReleaseMouseButtonLocationVisible = false;
 
+
             // ラジオボタンのように。
+            #region ラジオボタンのように
+
             // 今回、マウスボタンで押されたボタン
             string pressedBtn="";
             if (this.buttons["coordMat"].IsHit(e.Location))
@@ -1635,6 +1867,22 @@ namespace Gs_No1
             else if (this.buttons["reductL"].IsHit(e.Location))
             {
                 pressedBtn = this.buttons["reductL"].Id;
+            }
+            else if (this.buttons["detachesH"].IsHit(e.Location))
+            {
+                pressedBtn = this.buttons["detachesH"].Id;
+            }
+            else if (this.buttons["detachesV"].IsHit(e.Location))
+            {
+                pressedBtn = this.buttons["detachesV"].Id;
+            }
+            else if (this.buttons["shortenH"].IsHit(e.Location))
+            {
+                pressedBtn = this.buttons["shortenH"].Id;
+            }
+            else if (this.buttons["shortenV"].IsHit(e.Location))
+            {
+                pressedBtn = this.buttons["shortenV"].Id;
             }
             else if (this.buttons["text"].IsHit(e.Location))
             {
@@ -1771,6 +2019,47 @@ namespace Gs_No1
                     this.buttons["reductL"].SwitchOffAction();
                 }
 
+                // 離す、縮める
+                if (this.buttons["detachesH"].Id == pressedBtn)
+                {
+                    this.buttons["detachesH"].IsSelected = true;
+                }
+                else
+                {
+                    this.buttons["detachesH"].IsSelected = false;
+                    this.buttons["detachesH"].SwitchOffAction();
+                }
+
+                if (this.buttons["detachesV"].Id == pressedBtn)
+                {
+                    this.buttons["detachesV"].IsSelected = true;
+                }
+                else
+                {
+                    this.buttons["detachesV"].IsSelected = false;
+                    this.buttons["detachesV"].SwitchOffAction();
+                }
+
+                if (this.buttons["shortenH"].Id == pressedBtn)
+                {
+                    this.buttons["shortenH"].IsSelected = true;
+                }
+                else
+                {
+                    this.buttons["shortenH"].IsSelected = false;
+                    this.buttons["shortenH"].SwitchOffAction();
+                }
+
+                if (this.buttons["shortenV"].Id == pressedBtn)
+                {
+                    this.buttons["shortenV"].IsSelected = true;
+                }
+                else
+                {
+                    this.buttons["shortenV"].IsSelected = false;
+                    this.buttons["shortenV"].SwitchOffAction();
+                }
+
                 // テキスト
                 if (this.buttons["text"].Id == pressedBtn)
                 {
@@ -1846,244 +2135,458 @@ namespace Gs_No1
                 }
             }
 
-            if (this.buttons["scene"].IsSelected)
+            #endregion
+
+
+            // ボタンエリアと被っていない領域でマウスダウンをした場合。
+            if (this.buttonAreaBottom < e.Location.Y)
             {
-                if (!this.buttons["connect"].IsSelected && !this.buttons["disconnect"].IsSelected)
+                if (this.buttons["scene"].IsSelected)
                 {
-                    //────────────────────────────────────────
-                    // シーンモード　ただし、接続、切断モードでない
-                    //────────────────────────────────────────
-
-                    // 接続線の選択
-                    Cable cable2 = null;
-                    int i = 0;
-                    foreach (Cable cable in this.CableList)
+                    if (!this.buttons["connect"].IsSelected && !this.buttons["disconnect"].IsSelected)
                     {
-                        if (cable.IsHit1(e.Location))
+                        //────────────────────────────────────────
+                        // シーンモード　ただし、接続、切断モードでない
+                        //────────────────────────────────────────
+
+                        // 接続線の選択
+                        Cable cable2 = null;
+                        int i = 0;
+                        foreach (Cable cable in this.CableList)
                         {
-                            cable2 = cable;
-                            i = 1;
-                            // 最初の１件のみ
-                            break;
-                        }
-                        else if (cable.IsHit0(e.Location))
-                        {
-                            cable2 = cable;
-                            i = 0;
-                            // 最初の１件のみ
-                            break;
-                        }
-                    }
-
-                    if (null != cable2)
-                    {
-                        cable2.IsSelected[i] = true;
-                        goto END_SCENE_MODE;
-                    }
-
-
-                    // シーンボックスの選択
-                    SceneBox scene2 = null;
-                    foreach (SceneBox scene in this.SceneBoxList)
-                    {
-                        if (scene.IsHit(e.Location))
-                        {
-                            scene2 = scene;
-                            // 最初の１件のみ
-                            break;
-                        }
-                    }
-
-                    if (null != scene2)
-                    {
-                        if (this.buttons["copy"].IsSelected)
-                        {
-                            //────────────────────────────────────────
-                            // コピー
-                            //────────────────────────────────────────
-
-                            SceneBox scene3 = scene2.Clone();
-                            scene3.SourceBounds = new Rectangle(
-                                scene3.SourceBounds.X + UiMain.CELL_SIZE,
-                                scene3.SourceBounds.Y + UiMain.CELL_SIZE,
-                                scene3.SourceBounds.Width,
-                                scene3.SourceBounds.Height
-                                );
-                            this.SceneBoxList.Add(scene3);
-
-                        }
-                        else if (this.buttons["shape"].IsSelected)
-                        {
-                            //────────────────────────────────────────
-                            // 形状切替
-                            //────────────────────────────────────────
-
-                            switch (scene2.Shape)
+                            if (cable.IsHit1(e.Location))
                             {
-                                case 0:
-                                    scene2.Shape = 1;
-                                    break;
-                                case 1:
-                                    scene2.Shape = 2;
-                                    break;
-                                default:
-                                    scene2.Shape = 0;
-                                    break;
+                                cable2 = cable;
+                                i = 1;
+                                // 最初の１件のみ
+                                break;
+                            }
+                            else if (cable.IsHit0(e.Location))
+                            {
+                                cable2 = cable;
+                                i = 0;
+                                // 最初の１件のみ
+                                break;
                             }
                         }
-                        else if (this.buttons["text"].IsSelected)
-                        {
-                            //────────────────────────────────────────
-                            // テキストモード
-                            //────────────────────────────────────────
 
-                            //他のシーンを選択解除
-                            foreach (SceneBox scene in this.SceneBoxList)
+                        if (null != cable2)
+                        {
+                            cable2.IsSelected[i] = true;
+                            goto END_SCENE_MODE;
+                        }
+
+
+                        // ──────────
+                        // 選択シーンボックス
+                        // ──────────
+                        SceneBox scene2 = null;
+                        foreach (SceneBox scene in this.SceneBoxList)
+                        {
+                            if (scene.IsHit(e.Location))
                             {
-                                scene.IsSelected = false;
+                                scene2 = scene;
+                                // 最初の１件のみ
+                                break;
                             }
-
-                            scene2.IsSelected = true;
-                            this.textBox1.Visible = true;
-                            this.textBox1.Bounds = new Rectangle(
-                                scene2.Bounds.X,
-                                scene2.Bounds.Y,
-                                scene2.Bounds.Width,
-                                scene2.Bounds.Height
-                                );
-                            this.textBox1.Text = scene2.Title;
-                            this.textBox1.Font = new Font(scene2.FontName, scene2.FontSize);
-
-                            this.textBox1.Focus();
-                            this.textBox1.SelectAll();
-                        }
-                        else if (this.buttons["delete"].IsSelected)
-                        {
-                            //────────────────────────────────────────
-                            // 削除モード
-                            //────────────────────────────────────────
-                            this.SceneBoxList.Remove(scene2);
-                        }
-                        else
-                        {
-                            scene2.IsSelected = true;
                         }
 
-                    }
-
-                END_SCENE_MODE:
-                    ;
-                }
-                else if (this.buttons["connect"].IsSelected)
-                {
-                    //────────────────────────────────────────
-                    // シーンモード　ただし、接続モード
-                    //────────────────────────────────────────
-
-                    if (!buttonReleased)
-                    {
-                        // ボタンの上で放した場合以外に限る。
-
-                        bool isHit = false;
-                        // 座標マット
-                        int x = this.coordMat.SourceBounds.X;
-                        int y = this.coordMat.SourceBounds.Y;
-                        int width = this.coordMat.SourceBounds.Width;
-                        int height = this.coordMat.SourceBounds.Height;
-                        for (int row = 0; row < this.coordMatRepeatY; row++)
+                        if (null != scene2)
                         {
-                            for (int column = 0; column < this.coordMatRepeatX; column++)
+                            if (this.buttons["copy"].IsSelected)
                             {
-                                this.coordMat.FileName = row + "_" + column + ".png";
-                                this.coordMat.SourceBounds = new Rectangle(
-                                    column * width + x,
-                                    row * height + y,
-                                    width,
-                                    height
+                                //────────────────────────────────────────
+                                // コピー
+                                //────────────────────────────────────────
+                                #region コピー
+
+                                SceneBox scene3 = scene2.Clone();
+                                scene3.SourceBounds = new Rectangle(
+                                    scene3.SourceBounds.X + UiMain.CELL_SIZE,
+                                    scene3.SourceBounds.Y + UiMain.CELL_SIZE,
+                                    scene3.SourceBounds.Width,
+                                    scene3.SourceBounds.Height
                                     );
-                                if (this.coordMat.IsHit(e.Location))
+                                this.SceneBoxList.Add(scene3);
+
+                                #endregion
+                            }
+                            else if (this.buttons["shape"].IsSelected)
+                            {
+                                //────────────────────────────────────────
+                                // 形状切替
+                                //────────────────────────────────────────
+                                #region 形状切替
+
+                                switch (scene2.Shape)
                                 {
-                                    isHit = true;
-                                    goto BREAK_FOR1;
+                                    case 0:
+                                        scene2.Shape = 1;
+                                        break;
+                                    case 1:
+                                        scene2.Shape = 2;
+                                        break;
+                                    default:
+                                        scene2.Shape = 0;
+                                        break;
+                                }
+
+                                #endregion
+                            }
+                            else if (this.buttons["text"].IsSelected)
+                            {
+                                //────────────────────────────────────────
+                                // テキストモード
+                                //────────────────────────────────────────
+                                #region テキストモード
+
+                                //他のシーンを選択解除
+                                foreach (SceneBox scene in this.SceneBoxList)
+                                {
+                                    scene.IsSelected = false;
+                                }
+
+                                scene2.IsSelected = true;
+                                this.textBox1.Visible = true;
+                                this.textBox1.Bounds = new Rectangle(
+                                    scene2.Bounds.X,
+                                    scene2.Bounds.Y,
+                                    scene2.Bounds.Width,
+                                    scene2.Bounds.Height
+                                    );
+                                this.textBox1.Text = scene2.Title;
+                                this.textBox1.Font = new Font(scene2.FontName, scene2.FontSize);
+
+                                this.textBox1.Focus();
+                                this.textBox1.SelectAll();
+
+                                #endregion
+                            }
+                            else if (this.buttons["delete"].IsSelected)
+                            {
+                                //────────────────────────────────────────
+                                // 削除モード
+                                //────────────────────────────────────────
+                                #region 削除モード
+
+                                this.SceneBoxList.Remove(scene2);
+
+                                #endregion
+                            }
+                            else
+                            {
+                                scene2.IsSelected = true;
+                            }
+
+                        }
+
+                    END_SCENE_MODE:
+                        ;
+                    }
+                    else if (this.buttons["connect"].IsSelected)
+                    {
+                        //────────────────────────────────────────
+                        // シーンモード　ただし、接続モード
+                        //────────────────────────────────────────
+
+                        if (!buttonReleased)
+                        {
+                            // ボタンの上で放した場合以外に限る。
+
+                            bool isHit = false;
+                            // 座標マット
+                            int x = this.coordMat.SourceBounds.X;
+                            int y = this.coordMat.SourceBounds.Y;
+                            int width = this.coordMat.SourceBounds.Width;
+                            int height = this.coordMat.SourceBounds.Height;
+                            for (int row = 0; row < this.coordMatRepeatY; row++)
+                            {
+                                for (int column = 0; column < this.coordMatRepeatX; column++)
+                                {
+                                    this.coordMat.FileName = row + "_" + column + ".png";
+                                    this.coordMat.SourceBounds = new Rectangle(
+                                        column * width + x,
+                                        row * height + y,
+                                        width,
+                                        height
+                                        );
+                                    if (this.coordMat.IsHit(e.Location))
+                                    {
+                                        isHit = true;
+                                        goto BREAK_FOR1;
+                                    }
                                 }
                             }
-                        }
-                    BREAK_FOR1:
-                        this.coordMat.SourceBounds = new Rectangle(x, y, width, height);
+                        BREAK_FOR1:
+                            this.coordMat.SourceBounds = new Rectangle(x, y, width, height);
 
-                        if (isHit)
-                        {
-                            Cable cable = null;
-                            if (0 < this.CableList.Count)
+                            if (isHit)
                             {
-                                // 既存ケーブルの最終要素
-                                cable = this.CableList[this.CableList.Count - 1];
+                                Cable cable = null;
+                                if (0 < this.CableList.Count)
+                                {
+                                    // 既存ケーブルの最終要素
+                                    cable = this.CableList[this.CableList.Count - 1];
 
-                                // [0]起点　かつ　[1]終点　の両方が表示されている場合、新しく追加。
-                                if (cable.IsVisible[0] && cable.IsVisible[1])
+                                    // [0]起点　かつ　[1]終点　の両方が表示されている場合、新しく追加。
+                                    if (cable.IsVisible[0] && cable.IsVisible[1])
+                                    {
+                                        cable = new Cable();
+                                        this.CableList.Add(cable);
+                                    }
+                                }
+                                else
                                 {
                                     cable = new Cable();
                                     this.CableList.Add(cable);
                                 }
-                            }
-                            else
-                            {
-                                cable = new Cable();
-                                this.CableList.Add(cable);
-                            }
 
-                            // ──────────
-                            // [0]起点　[1]終点
-                            // ──────────
-                            int i;
-                            if (!cable.IsVisible[0])
-                            {
-                                i = 0;
-                            }
-                            else
-                            {
-                                i = 1;
-                            }
+                                // ──────────
+                                // [0]起点　[1]終点
+                                // ──────────
+                                int i;
+                                if (!cable.IsVisible[0])
+                                {
+                                    i = 0;
+                                }
+                                else
+                                {
+                                    i = 1;
+                                }
 
-                            cable.IsVisible[i] = true;
-                            cable.SourceBounds[i] = new Rectangle(
-                                (e.Location.X) - (e.Location.X - this.coordMat.Bounds.X) % UiMain.CELL_SIZE,
-                                (e.Location.Y) - (e.Location.Y - this.coordMat.Bounds.Y) % UiMain.CELL_SIZE,
-                                UiMain.CELL_SIZE,
-                                UiMain.CELL_SIZE
-                                );
+                                cable.IsVisible[i] = true;
+                                cable.SourceBounds[i] = new Rectangle(
+                                    (e.Location.X) - (e.Location.X - this.coordMat.Bounds.X) % UiMain.CELL_SIZE,
+                                    (e.Location.Y) - (e.Location.Y - this.coordMat.Bounds.Y) % UiMain.CELL_SIZE,
+                                    UiMain.CELL_SIZE,
+                                    UiMain.CELL_SIZE
+                                    );
+                            }
                         }
-                    }
 
+                    }
+                    else
+                    {
+                        //────────────────────────────────────────
+                        // シーンモード　ただし、切断モード
+                        //────────────────────────────────────────
+
+                        // 削除するケーブルの一覧
+                        List<Cable> delete = new List<Cable>();
+
+                        foreach (Cable cable in this.CableList)
+                        {
+                            if (cable.Bounds[0].Contains(e.Location))
+                            {
+                                delete.Add(cable);
+                            }
+                            else if (cable.Bounds[1].Contains(e.Location))
+                            {
+                                delete.Add(cable);
+                            }
+                        }
+
+                        foreach (Cable cable in delete)
+                        {
+                            this.CableList.Remove(cable);
+                        }
+
+                    }
                 }
-                else
+                else if (this.buttons["coordMat"].IsSelected)
                 {
-                    //────────────────────────────────────────
-                    // シーンモード　ただし、切断モード
-                    //────────────────────────────────────────
-
-                    // 削除するケーブルの一覧
-                    List<Cable> delete = new List<Cable>();
-
-                    foreach (Cable cable in this.CableList)
+                    if (this.buttons["detachesH"].IsSelected)
                     {
-                        if (cable.Bounds[0].Contains(e.Location))
-                        {
-                            delete.Add(cable);
-                        }
-                        else if (cable.Bounds[1].Contains(e.Location))
-                        {
-                            delete.Add(cable);
-                        }
-                    }
+                        //────────────────────────────────────────
+                        // 座標マットモード　離す横
+                        //────────────────────────────────────────
+                        #region 座標マットモード　離す横
 
-                    foreach (Cable cable in delete)
+                        // マウスクリック位置のグリッド列以右のものを、グリッド１つ分右にずらします。
+
+                        // ──────────
+                        // 該当シーンボックス
+                        // ──────────
+                        foreach (SceneBox scene in this.SceneBoxList)
+                        {
+                            if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= scene.Bounds.X)
+                            {
+                                scene.SourceBounds = new Rectangle(
+                                    scene.SourceBounds.X + UiMain.CELL_SIZE,
+                                    scene.SourceBounds.Y,
+                                    scene.SourceBounds.Width,
+                                    scene.SourceBounds.Height
+                                    );
+                            }
+                        }
+
+                        // ──────────
+                        // 該当接続線
+                        // ──────────
+                        foreach (Cable cable in this.CableList)
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= cable.Bounds[i].X)
+                                {
+                                    cable.SourceBounds[i] = new Rectangle(
+                                        cable.SourceBounds[i].X + UiMain.CELL_SIZE,
+                                        cable.SourceBounds[i].Y,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+                        }
+
+                        #endregion
+                    }
+                    else if (this.buttons["detachesV"].IsSelected)
                     {
-                        this.CableList.Remove(cable);
-                    }
+                        //────────────────────────────────────────
+                        // 座標マットモード　離す縦
+                        //────────────────────────────────────────
+                        #region 座標マットモード　離す縦
 
+                        // マウスクリック位置のグリッド行以下のものを、グリッド１つ分下げます。
+
+                        // ──────────
+                        // 該当シーンボックス
+                        // ──────────
+                        foreach (SceneBox scene in this.SceneBoxList)
+                        {
+                            if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= scene.Bounds.Y)
+                            {
+                                scene.SourceBounds = new Rectangle(
+                                    scene.SourceBounds.X,
+                                    scene.SourceBounds.Y + UiMain.CELL_SIZE,
+                                    scene.SourceBounds.Width,
+                                    scene.SourceBounds.Height
+                                    );
+                            }
+                        }
+
+                        // ──────────
+                        // 該当接続線
+                        // ──────────
+                        foreach (Cable cable in this.CableList)
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= cable.Bounds[i].Y)
+                                {
+                                    cable.SourceBounds[i] = new Rectangle(
+                                        cable.SourceBounds[i].X,
+                                        cable.SourceBounds[i].Y + UiMain.CELL_SIZE,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+                        }
+
+                        #endregion
+                    }
+                    else if (this.buttons["shortenH"].IsSelected)
+                    {
+                        //────────────────────────────────────────
+                        // 座標マットモード　縮める横
+                        //────────────────────────────────────────
+                        #region 座標マットモード　縮める横
+
+                        // マウスクリック位置のグリッド列以右のものを、グリッド１つ分左にずらします。
+
+                        // ──────────
+                        // 該当シーンボックス
+                        // ──────────
+                        foreach (SceneBox scene in this.SceneBoxList)
+                        {
+                            if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= scene.Bounds.X)
+                            {
+                                scene.SourceBounds = new Rectangle(
+                                    scene.SourceBounds.X - UiMain.CELL_SIZE,
+                                    scene.SourceBounds.Y,
+                                    scene.SourceBounds.Width,
+                                    scene.SourceBounds.Height
+                                    );
+                            }
+                        }
+
+                        // ──────────
+                        // 該当接続線
+                        // ──────────
+                        foreach (Cable cable in this.CableList)
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= cable.Bounds[i].X)
+                                {
+                                    cable.SourceBounds[i] = new Rectangle(
+                                        cable.SourceBounds[i].X - UiMain.CELL_SIZE,
+                                        cable.SourceBounds[i].Y,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+                        }
+
+                        #endregion
+                    }
+                    else if (this.buttons["shortenV"].IsSelected)
+                    {
+                        //────────────────────────────────────────
+                        // 座標マットモード　縮める縦
+                        //────────────────────────────────────────
+                        #region 座標マットモード　縮める縦
+
+                        // マウスクリック位置のグリッド行以下のものを、グリッド１つ分下げます。
+
+                        // ──────────
+                        // 該当シーンボックス
+                        // ──────────
+                        foreach (SceneBox scene in this.SceneBoxList)
+                        {
+                            if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= scene.Bounds.Y)
+                            {
+                                scene.SourceBounds = new Rectangle(
+                                    scene.SourceBounds.X,
+                                    scene.SourceBounds.Y - UiMain.CELL_SIZE,
+                                    scene.SourceBounds.Width,
+                                    scene.SourceBounds.Height
+                                    );
+                            }
+                        }
+
+                        // ──────────
+                        // 該当接続線
+                        // ──────────
+                        foreach (Cable cable in this.CableList)
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= cable.Bounds[i].Y)
+                                {
+                                    cable.SourceBounds[i] = new Rectangle(
+                                        cable.SourceBounds[i].X,
+                                        cable.SourceBounds[i].Y - UiMain.CELL_SIZE,
+                                        cable.SourceBounds[i].Width,
+                                        cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+                        }
+
+                        #endregion
+                    }
+                    else
+                    {
+                        this.isRowCursorXEnable = false;
+                        this.isRowCursorYEnable = false;
+                    }
                 }
             }
+
 
             this.Refresh();
         }
@@ -2105,6 +2608,10 @@ namespace Gs_No1
             this.buttons["reductR"].Load();
             this.buttons["reductB"].Load();
             this.buttons["reductL"].Load();
+            this.buttons["detachesH"].Load();
+            this.buttons["detachesV"].Load();
+            this.buttons["shortenH"].Load();
+            this.buttons["shortenV"].Load();
             this.buttons["text"].Load();
             this.buttons["create"].Load();
             this.buttons["copy"].Load();
@@ -2117,6 +2624,7 @@ namespace Gs_No1
         private void UiMain_MouseMove(object sender, MouseEventArgs e)
         {
             // マウスオーバー
+            #region マウスオーバー
 
             bool forcedOff = false;
             if (this.buttons["coordMat"].IsSelected)
@@ -2184,6 +2692,12 @@ namespace Gs_No1
             this.buttons["reductB"].CheckMouseOver(e.Location, ref forcedOff);
             this.buttons["reductL"].CheckMouseOver(e.Location, ref forcedOff);
 
+            // 離す、縮める
+            this.buttons["detachesH"].CheckMouseOver(e.Location, ref forcedOff);
+            this.buttons["detachesV"].CheckMouseOver(e.Location, ref forcedOff);
+            this.buttons["shortenH"].CheckMouseOver(e.Location, ref forcedOff);
+            this.buttons["shortenV"].CheckMouseOver(e.Location, ref forcedOff);
+
             // テキスト
             this.buttons["text"].CheckMouseOver(e.Location, ref forcedOff);
 
@@ -2199,6 +2713,7 @@ namespace Gs_No1
             // 形状切替
             this.buttons["shape"].CheckMouseOver(e.Location, ref forcedOff);
 
+            #endregion
 
 
             if (this.buttons["text"].IsSelected)
@@ -2323,8 +2838,8 @@ namespace Gs_No1
                                 if (cable.IsSelected[i])
                                 {
                                     cable.Movement[i] = new Rectangle(
-                                        this.Movement.X,// - (cable.SourceBounds[i].X + this.Movement.X) % UiMain.CELL_SIZE,
-                                        this.Movement.Y,// - (cable.SourceBounds[i].Y + this.Movement.Y) % UiMain.CELL_SIZE,
+                                        this.Movement.X - this.Movement.X % UiMain.CELL_SIZE,
+                                        this.Movement.Y - this.Movement.Y % UiMain.CELL_SIZE,
                                         0, 0);
                                 }
                             }
@@ -2368,6 +2883,80 @@ namespace Gs_No1
                 else
                 {
                     this.Movement = new Point();
+                }
+            }
+
+
+            if (this.buttons["coordMat"].IsSelected)
+            {
+                if (this.buttons["detachesH"].IsSelected)
+                {
+                    //────────────────────────────────────────
+                    // 座標マットモード　離す横
+                    //────────────────────────────────────────
+                    #region 座標マットモード　離す横
+
+                    // ──────────
+                    // マウスオーバー列
+                    // ──────────
+                    this.rowCursorX = e.Location.X - e.Location.X % UiMain.CELL_SIZE + this.coordMat.Bounds.X % UiMain.CELL_SIZE;
+                    this.isRowCursorXEnable = true;
+                    this.isRowCursorYEnable = false;
+
+                    #endregion
+                }
+                else if (this.buttons["detachesV"].IsSelected)
+                {
+                    //────────────────────────────────────────
+                    // 座標マットモード　離す縦
+                    //────────────────────────────────────────
+                    #region 座標マットモード　離す縦
+
+                    // ──────────
+                    // マウスオーバー行
+                    // ──────────
+                    this.rowCursorY = e.Location.Y - e.Location.Y % UiMain.CELL_SIZE + this.coordMat.Bounds.Y % UiMain.CELL_SIZE;
+                    this.isRowCursorYEnable = true;
+                    this.isRowCursorXEnable = false;
+
+                    #endregion
+                }
+                else if (this.buttons["shortenH"].IsSelected)
+                {
+                    //────────────────────────────────────────
+                    // 座標マットモード　縮める横
+                    //────────────────────────────────────────
+                    #region 座標マットモード　縮める横
+
+                    // ──────────
+                    // マウスオーバー列
+                    // ──────────
+                    this.rowCursorX = e.Location.X - e.Location.X % UiMain.CELL_SIZE + this.coordMat.Bounds.X % UiMain.CELL_SIZE;
+                    this.isRowCursorXEnable = true;
+                    this.isRowCursorYEnable = false;
+
+                    #endregion
+                }
+                else if (this.buttons["shortenV"].IsSelected)
+                {
+                    //────────────────────────────────────────
+                    // 座標マットモード　縮める縦
+                    //────────────────────────────────────────
+                    #region 座標マットモード　縮める縦
+
+                    // ──────────
+                    // マウスオーバー行
+                    // ──────────
+                    this.rowCursorY = e.Location.Y - e.Location.Y % UiMain.CELL_SIZE + this.coordMat.Bounds.Y % UiMain.CELL_SIZE;
+                    this.isRowCursorYEnable = true;
+                    this.isRowCursorXEnable = false;
+
+                    #endregion
+                }
+                else
+                {
+                    this.isRowCursorXEnable = false;
+                    this.isRowCursorYEnable = false;
                 }
             }
 

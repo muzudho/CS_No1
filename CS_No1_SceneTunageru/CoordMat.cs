@@ -210,20 +210,20 @@ namespace Gs_No1
                 weight = 2.0f;
             }
 
-            if (this.IsSelected)
-            {
-                // 青色
-                borderPen = new Pen(Color.FromArgb(128, 0, 0, 255),weight);
-                gridPen = new Pen(Color.FromArgb(128, 0, 0, 255));
-                brush = new SolidBrush(Color.FromArgb(128, 0, 0, 255));
-            }
-            else
-            {
+            //if (this.IsSelected)
+            //{
+            //    // 青色
+            //    borderPen = new Pen(Color.FromArgb(128, 0, 0, 255),weight);
+            //    gridPen = new Pen(Color.FromArgb(128, 0, 0, 255));
+            //    brush = new SolidBrush(Color.FromArgb(128, 0, 0, 255));
+            //}
+            //else
+            //{
                 // 灰色
                 borderPen = new Pen(Color.FromArgb(128, 192, 192, 192), weight);
                 gridPen = new Pen(Color.FromArgb(128, 192, 192, 192));
                 brush = new SolidBrush(Color.FromArgb(128, 192, 192, 192));
-            }
+            //}
 
             // 縦線
             int e1 = bounds2.Height / cellSize;

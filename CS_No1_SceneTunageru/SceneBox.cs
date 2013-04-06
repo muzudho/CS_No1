@@ -263,7 +263,7 @@ namespace Gs_No1
                     (int)(this.sourceBounds.Height)
                     );
 
-                pen = new Pen(Color.FromArgb(128, 0, 0, 0), weight);
+                pen = new Pen(Color.FromArgb(160, 192, 192, 192), weight);
 
                 if (this.Shape == 1)
                 {
@@ -297,7 +297,7 @@ namespace Gs_No1
                 g.DrawString(
                     this.title,
                     new Font(this.FontName, this.FontSize),
-                    new SolidBrush(Color.FromArgb(128, 0, 0, 0)),
+                    new SolidBrush(Color.FromArgb(160, 192, 192, 192)),
                     new Point(
                         (int)(bounds2.X + weight),
                         (int)(bounds2.Y + weight)

@@ -151,7 +151,174 @@ namespace Gs_No1
             this.Clear();
         }
 
-        public void Paint(Graphics g)
+        /// <summary>
+        /// 円の背景　描画
+        /// </summary>
+        /// <param name="g"></param>
+        public void PaintBackCircle(Graphics g)
+        {
+            //return;
+
+            // ──────────
+            // [0]起点　[1]終点
+            // ──────────
+            for (int i = 0; i < 2; i++)
+            {
+                if (this.IsVisible[i])
+                {
+                    // 線の太さ
+                    float weight;
+                    if (this.isMouseOvered[i])
+                    {
+                        weight = 4.0f;
+                    }
+                    else
+                    {
+                        weight = 2.0f;
+                    }
+
+                    //────────────────────────────────────────
+                    // 移動前の残像
+                    //────────────────────────────────────────
+
+                    // 描画なし
+
+                    //────────────────────────────────────────
+                    // 移動後
+                    //────────────────────────────────────────
+
+                    Rectangle bounds2 = new Rectangle(
+                        (int)(this.sourceBounds[i].X + this.Movement[i].X),// + weight / 2f
+                        (int)(this.sourceBounds[i].Y + this.Movement[i].Y + weight / 2f),
+                        (int)(this.sourceBounds[i].Width + this.Movement[i].Width),// - weight / 2f
+                        (int)(this.sourceBounds[i].Height + this.Movement[i].Height)// - weight / 2f
+                        );
+
+                    // 背景色
+                    Brush backBrush;
+                    if (this.IsSelected[i])
+                    {
+                        backBrush = new SolidBrush(Color.FromArgb(128, 0, 255, 0));// Brushes.Lime;
+                    }
+                    else
+                    {
+                        backBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 255));// Brushes.White;
+                    }
+
+                    // 輪っか
+                    g.FillEllipse(
+                        backBrush,
+                        new Rectangle(
+                            bounds2.X,
+                            bounds2.Y,
+                            bounds2.Width,
+                            bounds2.Height
+                            )
+                        );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 線　描画
+        /// </summary>
+        /// <param name="g"></param>
+        public void PaintLine(Graphics g)
+        {
+            //return;
+            // 輪っかは無し。
+
+            // ──────────
+            // [0]起点　[1]終点　の接続
+            // ──────────
+            //
+            // 起点と終点が共に表示されている場合。
+            //
+            if (this.IsVisible[0] && this.IsVisible[1])
+            {
+                //────────────────────────────────────────
+                // 移動前の残像
+                //────────────────────────────────────────
+
+                // 線の太さ
+                float weight = 2.0f;
+
+
+                Point[] points = new Point[3];
+
+                // [0]起点
+                points[0] = new Point(
+                    (int)(this.SourceBounds[0].X - weight / 2 + UiMain.CELL_SIZE / 2),
+                    (int)(this.SourceBounds[0].Y - weight / 2 + UiMain.CELL_SIZE / 2)
+                    );
+                // [1]中間点
+                points[1] = new Point(
+                    (int)(this.SourceBounds[1].X - weight / 2 + UiMain.CELL_SIZE / 2),
+                    (int)(this.SourceBounds[0].Y - weight / 2 + UiMain.CELL_SIZE / 2)
+                    );
+                // [2]終点
+                points[2] = new Point(
+                    (int)(this.SourceBounds[1].X - weight / 2 + UiMain.CELL_SIZE / 2),
+                    (int)(this.SourceBounds[1].Y - weight / 2 + UiMain.CELL_SIZE / 2)
+                    );
+
+                // 折れ線の色
+                Pen pen = new Pen(Color.FromArgb(160, 192, 192, 192), weight);
+
+                // 折れ線１、２
+                g.DrawLine(
+                    pen,
+                    points[0],
+                    points[1]
+                    );
+                g.DrawLine(
+                    pen,
+                    points[1],
+                    points[2]
+                    );
+
+                //────────────────────────────────────────
+                // 移動後
+                //────────────────────────────────────────
+
+                // [0]起点
+                points[0] = new Point(
+                    (int)(this.Bounds[0].X - weight / 2 + UiMain.CELL_SIZE / 2),
+                    (int)(this.Bounds[0].Y - weight / 2 + UiMain.CELL_SIZE / 2)
+                    );
+                // [1]中間点
+                points[1] = new Point(
+                    (int)(this.Bounds[1].X - weight / 2 + UiMain.CELL_SIZE / 2),
+                    (int)(this.Bounds[0].Y - weight / 2 + UiMain.CELL_SIZE / 2)
+                    );
+                // [2]終点
+                points[2] = new Point(
+                    (int)(this.Bounds[1].X - weight / 2 + UiMain.CELL_SIZE / 2),
+                    (int)(this.Bounds[1].Y - weight / 2 + UiMain.CELL_SIZE / 2)
+                    );
+
+                // 折れ線の色
+                pen = new Pen(Color.Black, weight);
+
+                // 折れ線１、２
+                g.DrawLine(
+                    pen,
+                    points[0],
+                    points[1]
+                    );
+                g.DrawLine(
+                    pen,
+                    points[1],
+                    points[2]
+                    );
+            }
+        }
+
+        /// <summary>
+        /// サークル
+        /// </summary>
+        /// <param name="g"></param>
+        public void PaintMouseMark(Graphics g)
         {
             // ──────────
             // [0]起点　[1]終点
@@ -182,8 +349,10 @@ namespace Gs_No1
                         (int)(this.sourceBounds[i].Height)// - weight / 2f
                         );
 
+                    Pen circlePen = new Pen(Color.FromArgb(160, 192, 192, 192), weight);
+
                     g.DrawEllipse(
-                        new Pen(Color.FromArgb(128, 0, 0, 0), weight),
+                        circlePen,
                         new Rectangle(
                             bounds2.X,
                             bounds2.Y,
@@ -203,29 +372,21 @@ namespace Gs_No1
                         (int)(this.sourceBounds[i].Height + this.Movement[i].Height)// - weight / 2f
                         );
 
-                    // 背景色
-                    Brush backBrush;
+                    // ○の色
                     if (this.IsSelected[i])
                     {
-                        backBrush = Brushes.Lime;
+                        // 半透明の緑
+                        circlePen = new Pen(Color.FromArgb(128, 0, 255, 0), weight);
                     }
                     else
                     {
-                        backBrush = Brushes.White;
+                        // 半透明の灰色
+                        circlePen = new Pen(Color.FromArgb(128, 192, 192, 192), weight);
                     }
 
-                    g.FillEllipse(
-                        backBrush,
-                        new Rectangle(
-                            bounds2.X,
-                            bounds2.Y,
-                            bounds2.Width,
-                            bounds2.Height
-                            )
-                        );
-
+                    // 輪っか
                     g.DrawEllipse(
-                        new Pen(Color.Black, weight),
+                        circlePen,
                         new Rectangle(
                             bounds2.X,
                             bounds2.Y,
@@ -235,48 +396,8 @@ namespace Gs_No1
                         );
                 }
             }
-
-            // ──────────
-            // [0]起点　[1]終点　の接続
-            // ──────────
-            //
-            // 起点が表示されている場合。
-            //
-            if (this.IsVisible[0] && this.IsVisible[1])
-            {
-                float weight = 2.0f;
-
-                Point[] points = new Point[3];
-
-                // [0]起点
-                points[0] = new Point(
-                    (int)(this.Bounds[0].X - weight/2 + UiMain.CELL_SIZE/2),
-                    (int)(this.Bounds[0].Y - weight / 2 + UiMain.CELL_SIZE / 2)
-                    );
-                // [1]中間点
-                points[1] = new Point(
-                    (int)(this.Bounds[1].X - weight / 2 + UiMain.CELL_SIZE / 2),
-                    (int)(this.Bounds[0].Y - weight / 2 + UiMain.CELL_SIZE / 2)
-                    );
-                // [2]終点
-                points[2] = new Point(
-                    (int)(this.Bounds[1].X - weight / 2 + UiMain.CELL_SIZE / 2),
-                    (int)(this.Bounds[1].Y - weight / 2 + UiMain.CELL_SIZE / 2)
-                    );
-
-                g.DrawLine(
-                    new Pen(Color.Black, weight),
-                    points[0],
-                    points[1]
-                    );
-                g.DrawLine(
-                    new Pen(Color.Black, weight),
-                    points[1],
-                    points[2]
-                    );
-
-            }
         }
+
 
         public void Save(StringBuilder sb)
         {
