@@ -498,16 +498,27 @@ namespace Gs_No1
                 // 折れ線
                 for (int i = 0; i < points.Length - 1;i++ )
                 {
+                    // （５）
+                    // 矢印頭。
                     if (i == 4 && this.IsVisible[0] && this.IsVisibleNode[0] && this.IsVisibleNode[1] && this.IsVisible[1])
                     {
-                        // （５）
-                        // 矢印頭。
-
                         g.DrawLine(
                             pen,
                             points[i].X,
                             points[i].Y,
                             points[i + 1].X - between,
+                            points[i + 1].Y
+                            );
+                    }
+                    // （３）
+                    // 矢印頭
+                    else if (i == 0 && this.IsVisible[0] && this.IsVisible[1] && this.Bounds[1].Y < this.Bounds[0].Y)
+                    {
+                        g.DrawLine(
+                            pen,
+                            points[i].X + between,
+                            points[i].Y,
+                            points[i + 1].X,
                             points[i + 1].Y
                             );
                     }
@@ -541,6 +552,28 @@ namespace Gs_No1
                         points[5].Y,
                         points[5].X - UiMain.CELL_SIZE / 2 - between,
                         points[5].Y + UiMain.CELL_SIZE / 2
+                        );
+                }
+                // （３）
+                // 矢印頭
+                else if (this.IsVisible[0] && this.IsVisible[1] && this.Bounds[1].Y < this.Bounds[0].Y)
+                {
+                    //　／
+                    g.DrawLine(
+                        pen,
+                        points[0].X + UiMain.CELL_SIZE / 2 + between,
+                        points[0].Y + UiMain.CELL_SIZE / 2,
+                        points[0].X + between,
+                        points[0].Y
+                        );
+
+                    //　＼
+                    g.DrawLine(
+                        pen,
+                        points[0].X + between,
+                        points[0].Y,
+                        points[0].X + UiMain.CELL_SIZE / 2 + between,
+                        points[0].Y - UiMain.CELL_SIZE / 2
                         );
                 }
 
@@ -625,16 +658,27 @@ namespace Gs_No1
                 for (int i = 0; i < points.Length - 1; i++)
                 {
 
-                    if (i==4 && this.IsVisible[0] && this.IsVisibleNode[0] && this.IsVisibleNode[1] && this.IsVisible[1])
+                    // （５）
+                    // 矢印頭。
+                    if (i == 4 && this.IsVisible[0] && this.IsVisibleNode[0] && this.IsVisibleNode[1] && this.IsVisible[1])
                     {
-                        // （５）
-                        // 矢印頭。
-
                         g.DrawLine(
                             pen,
                             points[i].X,
                             points[i].Y,
                             points[i + 1].X - between,
+                            points[i + 1].Y
+                            );
+                    }
+                    // （３）
+                    // 矢印頭
+                    else if (i == 0 && this.IsVisible[0] && this.IsVisible[1] && this.Bounds[1].Y < this.Bounds[0].Y)
+                    {
+                        g.DrawLine(
+                            pen,
+                            points[i].X + between,
+                            points[i].Y,
+                            points[i + 1].X,
                             points[i + 1].Y
                             );
                     }
@@ -670,6 +714,28 @@ namespace Gs_No1
                         points[5].Y,
                         points[5].X - UiMain.CELL_SIZE / 2 - between,
                         points[5].Y + UiMain.CELL_SIZE / 2
+                        );
+                }
+                // （３）
+                // 矢印頭
+                else if (this.IsVisible[0] && this.IsVisible[1] && this.Bounds[1].Y < this.Bounds[0].Y)
+                {
+                    //　／
+                    g.DrawLine(
+                        pen,
+                        points[0].X + UiMain.CELL_SIZE / 2 + between,
+                        points[0].Y + UiMain.CELL_SIZE / 2,
+                        points[0].X + between,
+                        points[0].Y
+                        );
+
+                    //　＼
+                    g.DrawLine(
+                        pen,
+                        points[0].X + between,
+                        points[0].Y,
+                        points[0].X + UiMain.CELL_SIZE / 2 + between,
+                        points[0].Y - UiMain.CELL_SIZE / 2
                         );
                 }
 
