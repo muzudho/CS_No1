@@ -679,6 +679,8 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(4 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 拡張_上
+
                 if (this.coordMatRepeatY < int.MaxValue)
                 {
                     this.coordMatRepeatY++;
@@ -718,6 +720,8 @@ namespace Gs_No1
 
                     this.Refresh();
                 }
+
+                #endregion
             };
             // 拡張右ボタン
             btn = new GraphicButton();
@@ -727,11 +731,15 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(5 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 拡張_右
+
                 if (this.coordMatRepeatX < int.MaxValue)
                 {
                     this.coordMatRepeatX++;
                     this.Refresh();
                 }
+
+                #endregion
             };
             // 拡張下ボタン
             btn = new GraphicButton();
@@ -741,11 +749,15 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(6 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 拡張_下
+
                 if (this.coordMatRepeatY < int.MaxValue)
                 {
                     this.coordMatRepeatY++;
                     this.Refresh();
-                }                   
+                }
+
+                #endregion
             };
             // 拡張左ボタン
             btn = new GraphicButton();
@@ -755,6 +767,8 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(7 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 拡張_左
+
                 if (this.coordMatRepeatX < int.MaxValue)
                 {
                     this.coordMatRepeatX++;
@@ -794,6 +808,8 @@ namespace Gs_No1
 
                     this.Refresh();
                 }
+
+                #endregion
             };
             // 縮小上ボタン
             btn = new GraphicButton();
@@ -803,6 +819,8 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(8 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 縮小_上
+
                 if (1 < this.coordMatRepeatY)
                 {
                     this.coordMatRepeatY--;
@@ -842,6 +860,7 @@ namespace Gs_No1
 
                     this.Refresh();
                 }
+                #endregion
             };
             // 縮小右ボタン
             btn = new GraphicButton();
@@ -851,11 +870,13 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(9 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 縮小_右
                 if (1<this.coordMatRepeatX)
                 {
                     this.coordMatRepeatX--;
                     this.Refresh();
                 }
+                #endregion
             };
             // 縮小下ボタン
             btn = new GraphicButton();
@@ -865,11 +886,13 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(10 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 縮小_下
                 if (1 < this.coordMatRepeatY)
                 {
                     this.coordMatRepeatY--;
                     this.Refresh();
                 }
+                #endregion
             };
             // 縮小左ボタン
             btn = new GraphicButton();
@@ -879,6 +902,7 @@ namespace Gs_No1
             btn.Bounds = new Rectangle(11 * 50, 0 * 50 + 75, 50, 50);
             btn.SwitchOnAction = () =>
             {
+                #region 縮小_左
                 if (1<this.coordMatRepeatX)
                 {
                     this.coordMatRepeatX--;
@@ -918,6 +942,7 @@ namespace Gs_No1
 
                     this.Refresh();
                 }
+                #endregion
             };
             // 離す横
             btn = new GraphicButton();
@@ -2463,8 +2488,6 @@ namespace Gs_No1
                         #endregion
 
 
-
-
                         if (this.buttons["copy"].IsSelected)
                         {
                             if (null != scene2)
@@ -2600,6 +2623,7 @@ namespace Gs_No1
                         // ──────────
                         foreach (Cable cable in this.CableList)
                         {
+                            // 始端、終端
                             for (int i = 0; i < 2; i++)
                             {
                                 if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= cable.Bounds[i].X)
@@ -2609,6 +2633,18 @@ namespace Gs_No1
                                         cable.SourceBounds[i].Y,
                                         cable.SourceBounds[i].Width,
                                         cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+
+                            // 中間点1～2
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= cable.BoundsNode[i].X)
+                                {
+                                    cable.SourceBoundsNode[i] = new Point(
+                                        cable.SourceBoundsNode[i].X + UiMain.CELL_SIZE,
+                                        cable.SourceBoundsNode[i].Y
                                         );
                                 }
                             }
@@ -2646,6 +2682,7 @@ namespace Gs_No1
                         // ──────────
                         foreach (Cable cable in this.CableList)
                         {
+                            // 始端、終端
                             for (int i = 0; i < 2; i++)
                             {
                                 if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= cable.Bounds[i].Y)
@@ -2655,6 +2692,18 @@ namespace Gs_No1
                                         cable.SourceBounds[i].Y + UiMain.CELL_SIZE,
                                         cable.SourceBounds[i].Width,
                                         cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+
+                            // 中間点1～2
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= cable.BoundsNode[i].Y)
+                                {
+                                    cable.SourceBoundsNode[i] = new Point(
+                                        cable.SourceBoundsNode[i].X,
+                                        cable.SourceBoundsNode[i].Y + UiMain.CELL_SIZE
                                         );
                                 }
                             }
@@ -2692,6 +2741,7 @@ namespace Gs_No1
                         // ──────────
                         foreach (Cable cable in this.CableList)
                         {
+                            // 始点、終点
                             for (int i = 0; i < 2; i++)
                             {
                                 if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= cable.Bounds[i].X)
@@ -2701,6 +2751,18 @@ namespace Gs_No1
                                         cable.SourceBounds[i].Y,
                                         cable.SourceBounds[i].Width,
                                         cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+
+                            // 中間点1～2
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.X - e.Location.X % UiMain.CELL_SIZE <= cable.BoundsNode[i].X)
+                                {
+                                    cable.SourceBoundsNode[i] = new Point(
+                                        cable.SourceBoundsNode[i].X - UiMain.CELL_SIZE,
+                                        cable.SourceBoundsNode[i].Y
                                         );
                                 }
                             }
@@ -2738,6 +2800,7 @@ namespace Gs_No1
                         // ──────────
                         foreach (Cable cable in this.CableList)
                         {
+                            // 始点、終点
                             for (int i = 0; i < 2; i++)
                             {
                                 if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= cable.Bounds[i].Y)
@@ -2747,6 +2810,18 @@ namespace Gs_No1
                                         cable.SourceBounds[i].Y - UiMain.CELL_SIZE,
                                         cable.SourceBounds[i].Width,
                                         cable.SourceBounds[i].Height
+                                        );
+                                }
+                            }
+
+                            // 中間点1～2
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (e.Location.Y - e.Location.Y % UiMain.CELL_SIZE <= cable.BoundsNode[i].Y)
+                                {
+                                    cable.SourceBoundsNode[i] = new Point(
+                                        cable.SourceBoundsNode[i].X,
+                                        cable.SourceBoundsNode[i].Y - UiMain.CELL_SIZE
                                         );
                                 }
                             }
